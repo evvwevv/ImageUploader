@@ -1,0 +1,8 @@
+.toolbar-spacer {
+    flex: 3 3 auto;
+}
+
+.toolbar-title {
+    flex: 1 1 auto;
+    text-align: center;
+}
