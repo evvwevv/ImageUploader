@@ -11,6 +11,9 @@ cache:
 addons:
   chrome: stable
 
+before_install: 
+  - cd angularFrontend
+
 script:
   - npm run lint
   - npm run test:headless
