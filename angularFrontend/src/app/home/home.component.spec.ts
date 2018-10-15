@@ -1,8 +1,8 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { HomeComponent } from './home.component';
-import { CoreModule } from '../core/core.module';
-import { SharedModule } from '../shared/shared.module';
+import {HomeComponent} from './home.component';
+import {CoreModule} from '../core/core.module';
+import {SharedModule} from '../shared/shared.module';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -14,11 +14,11 @@ describe('HomeComponent', () => {
         CoreModule,
         SharedModule
       ],
-      declarations: [ 
-        HomeComponent 
+      declarations: [
+        HomeComponent
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -32,7 +32,7 @@ describe('HomeComponent', () => {
   });
 
   it('should render welcome text in an h2 tag', () => {
-    const fixture = TestBed.createComponent(HomeComponent);
+    fixture = TestBed.createComponent(HomeComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('h2').textContent).toContain('Log in/Sign up to start uploading and sharing your own images');
