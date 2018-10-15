@@ -9,6 +9,6 @@ describe('workspace-project App', () => {
 
   it('should display welcome message', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toEqual('Welcome to angularFrontend!');
+    expect(page.getWelcomeText()).toEqual('Log in/Sign up to start uploading and sharing your own images');
   });
 });
