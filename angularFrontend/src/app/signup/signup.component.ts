@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
+import * as config from '../../assets/config.json';
 
 @Component({
   selector: 'app-signup',
@@ -15,6 +16,7 @@ export class SignupComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(config.api);
   }
 
   getErrorMessage() {
