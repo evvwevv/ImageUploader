@@ -1,4 +1,4 @@
-# ImageUploader
+# ImageUploader [![Build Status](https://travis-ci.com/BaconPartyWOOOO/ImageUploader.svg?token=UVJbDMtDSZa1rX1xDtmq&branch=master)](https://travis-ci.com/BaconPartyWOOOO/ImageUploader)
 
 ## Setting up the project on your local machine
 
