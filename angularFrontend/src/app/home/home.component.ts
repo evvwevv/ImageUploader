@@ -11,7 +11,7 @@ import * as config from '../../assets/config.json';
 @Injectable()
 export class HomeComponent implements OnInit {
 
-  name: string = "undefined";
+  name = 'undefined';
 
   constructor(private http: HttpClient) {
   }
