@@ -21,7 +21,7 @@ provider:
   name: aws
   runtime: nodejs8.10
   stage: test
-  region: us-west-1
+  region: us-east-1
 
 # you can overwrite defaults here
 #  stage: dev
