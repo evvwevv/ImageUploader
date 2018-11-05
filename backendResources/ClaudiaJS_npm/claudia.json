@@ -1,0 +1,11 @@
+{
+  "lambda": {
+    "role": "claudiajs_npm-executor",
+    "name": "claudiajs_npm",
+    "region": "us-east-1"
+  },
+  "api": {
+    "id": "w8foiqnm3a",
+    "module": "app"
+  }
+}
