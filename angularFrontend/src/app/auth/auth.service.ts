@@ -13,7 +13,7 @@ export class AuthService {
   loggedIn: BehaviorSubject<boolean>;
   password: String;
   constructor(private router: Router) {
-    //Amplify.configure(environment.amplify);
+    Amplify.configure(environment.amplify);
     this.loggedIn = new BehaviorSubject<boolean>(false);
   }
  

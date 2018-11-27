@@ -16,9 +16,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   loggedIn: boolean;
 
   constructor(private router: Router, public auth: AuthService, private cdr: ChangeDetectorRef) {
-    /*this.username = localStorage.getItem(
+    this.username = localStorage.getItem(
       environment.localstorageBaseKey + 'LastAuthUser'
-    );Need to setup aws environment in environment.ts, but dont have acc ;-;*/
+    );
   }
 
   ngOnInit() {
@@ -28,9 +28,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   ngAfterViewChecked() {
-    /*this.username = localStorage.getItem(
+    this.username = localStorage.getItem(
       environment.localstorageBaseKey + 'LastAuthUser'
-    );Need to setup aws environment in environment.ts, but dont have acc ;-;*/
+    );
     this.cdr.detectChanges();
   }
 
@@ -52,6 +52,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   public onNewUserClick() {
     this.router.navigate(['./signup']);
+  }
+
+  public onSignOutClick() {
+    this.auth.signOut();
+    this.loggedIn = false;
   }
 
 

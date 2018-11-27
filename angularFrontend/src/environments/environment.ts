@@ -3,7 +3,15 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  amplify: {
+    Auth: {
+      region: 'us-west-2',
+      userPoolId: 'us-west-2_FzbgfsUaC',
+      userPoolWebClientId: '738iqpt7l4vojqptqis1pqj9hc'
+    }
+  },
+  production: false,
+  localstorageBaseKey: 'CognitoIdentityServiceProvider.738iqpt7l4vojqptqis1pqj9hc'
 };
 
 /*

@@ -13,6 +13,7 @@ import * as config from '../../assets/config.json';
 export class HomeComponent implements OnInit {
 
   name = 'undefined';
+  loggedIn = false;
 
   constructor(private http: HttpClient,
               private auth: AuthService) {
@@ -24,6 +25,7 @@ export class HomeComponent implements OnInit {
       this.name = String(res);
 
     });*/
+    this.getData();
   }
 
   getData(): void {
@@ -31,6 +33,7 @@ export class HomeComponent implements OnInit {
       result => {
         console.log(result);
         this.name = result.username;
+        this.loggedIn = true;
       },
       error => {
         console.log(error);
