@@ -1,12 +1,12 @@
 <mat-card class="login-card">
     <mat-card-content>
-      <form class="login-form">
+      <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmitLogin(loginForm.value)">
         <mat-form-field>
-          <input matInput placeholder="Enter your email" [formControl]="email" required>
+          <input matInput class="form-control" placeholder="Enter your email" formControlName="email" required>
           <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
         </mat-form-field>
         <mat-form-field>
-          <input matInput placeholder="Enter your password" [type]="hide ? 'password' : 'text'">
+          <input matInput class="form-control" placeholder="Enter your password" formControlName="password" [type]="hide ? 'password' : 'text'">
           <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
         </mat-form-field>
         <button type="submit" mat-raised-button color="primary">Login</button>

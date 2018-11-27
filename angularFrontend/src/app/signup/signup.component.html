@@ -1,12 +1,12 @@
-<mat-card class="login-card">
+<mat-card class="signup-card">
     <mat-card-content>
-      <form class="login-form">
+      <form class="signup-form" *ngIf="!successfullySignup" [formGroup]="signupForm" (ngSubmit)="onSubmitSignup(signupForm.value)">
         <mat-form-field>
-          <input matInput placeholder="Enter your email" [formControl]="email" required>
+          <input matInput class="form-control" placeholder="Enter your email" formControlName="email" required>
           <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
         </mat-form-field>
         <mat-form-field>
-          <input matInput placeholder="Enter your password" [type]="hide ? 'password' : 'text'">
+          <input matInput class="form-control" placeholder="Enter your password" [type]="hide ? 'password' : 'text'" formControlName="password">
           <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
         </mat-form-field>
         <mat-form-field>
@@ -15,5 +15,17 @@
         </mat-form-field>
         <button type="submit" mat-raised-button color="primary">Create an Account</button>
       </form>
+      <button class="confirm-button" (click)="successfullySignup = true" *ngIf="!successfullySignup" mat-flat-button color="accent">Input Confirmation Code</button>
+      <form class="signup-form" *ngIf="successfullySignup" [formGroup]="confirmationForm" (ngSubmit)="onSubmitConfirmation(confirmationForm.value)">
+          <mat-form-field>
+            <input matInput class="form-control" placeholder="Enter your email" formControlName="email" required>
+            <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput class="form-control" placeholder="Enter confirmation code" formControlName="confirmationCode" required>
+          </mat-form-field>
+          <button type="submit" mat-raised-button color="primary">Confirm Account</button>
+      </form>
+      <button class="back-button" (click)="successfullySignup = false" *ngIf="successfullySignup" mat-raised-button color="accent">Go Back</button>
     </mat-card-content>
 </mat-card>

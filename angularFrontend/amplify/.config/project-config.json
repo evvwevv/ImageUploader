@@ -1,0 +1,20 @@
+{
+    "projectName": "angularFrontend",
+    "projectPath": "C:\\Users\\Stevie\\Documents\\SeniorProject\\ImageUploader\\angularFrontend",
+    "defaultEditor": "code",
+    "frontendHandler": {
+        "javascript": "C:\\Users\\Stevie\\AppData\\Roaming\\nvm\\v10.11.0\\node_modules\\@aws-amplify\\cli\\node_modules\\amplify-frontend-javascript"
+    },
+    "javascript": {
+        "framework": "angular",
+        "config": {
+            "SourceDir": "src",
+            "DistributionDir": "dist",
+            "BuildCommand": "npm build",
+            "StartCommand": "npm start"
+        }
+    },
+    "providers": {
+        "awscloudformation": "C:\\Users\\Stevie\\AppData\\Roaming\\nvm\\v10.11.0\\node_modules\\@aws-amplify\\cli\\node_modules\\amplify-provider-awscloudformation"
+    }
+}

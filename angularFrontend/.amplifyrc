@@ -1,0 +1,14 @@
+{
+    "providers": {
+        "awscloudformation": {
+            "AuthRoleName": "angularrontend-20181127184045-authRole",
+            "UnauthRoleArn": "arn:aws:iam::431517749697:role/angularrontend-20181127184045-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::431517749697:role/angularrontend-20181127184045-authRole",
+            "Region": "us-west-2",
+            "DeploymentBucketName": "angularrontend-20181127184045-deployment",
+            "UnauthRoleName": "angularrontend-20181127184045-unauthRole",
+            "StackName": "angularrontend-20181127184045",
+            "StackId": "arn:aws:cloudformation:us-west-2:431517749697:stack/angularrontend-20181127184045/81427530-f228-11e8-8b9e-503aca41a029"
+        }
+    }
+}

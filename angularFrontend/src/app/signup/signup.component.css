@@ -1,9 +1,21 @@
-.login-card {
+.signup-card {
     max-width: 400px;
     margin: 30px auto;
 }
   
-.login-form {
+.signup-form {
     display: flex;
     flex-direction: column;
+}
+
+.confirm-button {
+    display: block;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.back-button {
+    display: block;
+    width: 100%;
+    margin-top: 15px;
 }
