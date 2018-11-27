@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormControl, Validators} from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from './../auth/auth.service';
+import {Router} from '@angular/router';
+import {AuthService} from './../auth/auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -16,11 +16,10 @@ export class SignupComponent implements OnInit {
   hide = true;
   email = new FormControl('', [Validators.required, Validators.email]);
 
-  constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private auth: AuthService
-  ) {}
+  constructor(private fb: FormBuilder,
+              private router: Router,
+              private auth: AuthService) {
+  }
 
   ngOnInit() {
     this.initForm();

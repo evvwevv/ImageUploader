@@ -1,15 +1,15 @@
-import { Component, OnInit, OnDestroy, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { AuthService } from './auth/auth.service';
-import { environment } from '../environments/environment';
-import { Router } from '@angular/router';
+import {Component, OnInit, OnDestroy, AfterViewChecked, ChangeDetectorRef} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {AuthService} from './auth/auth.service';
+import {environment} from '../environments/environment';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, OnDestroy, AfterViewChecked{
+export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   title = 'angularFrontend';
   subscription: Subscription;
   username: String;
@@ -42,15 +42,15 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked{
     this.auth.signOut();
   }
 
-  public onUploadClick(){
+  public onUploadClick() {
     this.router.navigate(['./']);
   }
 
-  public onSignInClick(){
+  public onSignInClick() {
     this.router.navigate(['./login']);
   }
 
-  public onNewUserClick(){
+  public onNewUserClick() {
     this.router.navigate(['./signup']);
   }
 
