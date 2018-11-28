@@ -16,31 +16,30 @@ export class AuthService {
     Amplify.configure(environment.amplify);
     this.loggedIn = new BehaviorSubject<boolean>(false);
   }
- 
+
   public signUp(email, password): Observable<any> {
     this.password = password;
     return from(Auth.signUp(email, password, email));
   }
- 
+
   public confirmSignUp(email, code): Observable<any> {
     return from(Auth.confirmSignUp(email, code));
   }
- 
+
   public signIn(email, password): Observable<any> {
     return from(Auth.signIn(email, password)).pipe(
       tap(() => this.loggedIn.next(true))
     );
   }
- 
+
   public getData(): Observable<any> {
     return from(Auth.currentAuthenticatedUser());
   }
- 
+
   public getIdToken(): string {
     return Auth.currentSession()['__zone_symbol__value']['idToken']['jwtToken'];
   }
- 
- 
+
   public isAuthenticated(): Observable<boolean> {
     return from(Auth.currentAuthenticatedUser()).pipe(
       map(result => {
@@ -53,7 +52,7 @@ export class AuthService {
       })
     );
   }
- 
+
   public signOut() {
     from(Auth.signOut()).subscribe(
       result => {
