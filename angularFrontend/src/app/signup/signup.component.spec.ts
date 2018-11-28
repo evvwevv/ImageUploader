@@ -3,6 +3,13 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {SignupComponent} from './signup.component';
 import {CoreModule} from '../core/core.module';
 import {SharedModule} from '../shared/shared.module';
+import { Router } from '@angular/router';
+
+
+let mockRouter:any;
+    class MockRouter {
+        navigate = jasmine.createSpy('navigate');
+    }
 
 describe('SignupComponent', () => {
   let component: SignupComponent;
@@ -16,6 +23,9 @@ describe('SignupComponent', () => {
       ],
       declarations: [
         SignupComponent
+      ],
+      providers: [ 
+        { provide: Router, useValue: mockRouter }
       ]
     })
       .compileComponents();

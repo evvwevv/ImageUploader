@@ -35,7 +35,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    if(this.subscription && !this.subscription.closed) {
+      this.subscription.unsubscribe();
+    }
   }
 
   onClickLogout() {
