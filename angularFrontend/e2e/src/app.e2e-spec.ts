@@ -9,6 +9,6 @@ describe('workspace-project App', () => {
 
   it('should display welcome message', () => {
     page.navigateTo();
-    expect(page.getWelcomeText()).toEqual('Log in/Sign up to start uploading and sharing your own images');
+    expect(page.getWelcomeText()).toEqual('Sign in/Sign up to start uploading and sharing your own images');
   });
 });

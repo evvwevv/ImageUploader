@@ -4,13 +4,14 @@ import {HomeComponent} from './home.component';
 import {CoreModule} from '../core/core.module';
 import {SharedModule} from '../shared/shared.module';
 import {HttpClientModule} from '@angular/common/http';
-import { Router } from '@angular/router';
+import {Router} from '@angular/router';
 
 
-let mockRouter:any;
-    class MockRouter {
-        navigate = jasmine.createSpy('navigate');
-    }
+let mockRouter: any;
+
+class MockRouter {
+  navigate = jasmine.createSpy('navigate');
+}
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -27,8 +28,8 @@ describe('HomeComponent', () => {
       declarations: [
         HomeComponent
       ],
-      providers: [ 
-        { provide: Router, useValue: mockRouter }
+      providers: [
+        {provide: Router, useValue: mockRouter}
       ]
     })
       .compileComponents();
