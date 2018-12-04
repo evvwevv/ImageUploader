@@ -49,6 +49,6 @@ describe('HomeComponent', () => {
     fixture = TestBed.createComponent(HomeComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h2').textContent).toContain('Log in/Sign up to start uploading and sharing your own images');
+    expect(compiled.querySelector('h2').textContent).toContain('Sign in/Sign up to start uploading and sharing your own images');
   });
 });

@@ -19,6 +19,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.username = localStorage.getItem(
       environment.localstorageBaseKey + 'LastAuthUser'
     );
+    this.auth.loggedIn.subscribe(loggedIn => {
+      this.loggedIn = loggedIn;
+    });
   }
 
   ngOnInit() {
