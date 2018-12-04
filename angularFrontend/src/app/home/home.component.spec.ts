@@ -5,6 +5,7 @@ import {CoreModule} from '../core/core.module';
 import {SharedModule} from '../shared/shared.module';
 import {HttpClientModule} from '@angular/common/http';
 import {Router} from '@angular/router';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 
 let mockRouter: any;
@@ -27,6 +28,9 @@ describe('HomeComponent', () => {
       ],
       declarations: [
         HomeComponent
+      ],
+      schemas: [
+        NO_ERRORS_SCHEMA
       ],
       providers: [
         {provide: Router, useValue: mockRouter}

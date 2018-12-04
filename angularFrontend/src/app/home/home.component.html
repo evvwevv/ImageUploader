@@ -1,5 +1,9 @@
 <mat-card>
-    <img mat-card-image src="../assets/bannerphoto.jpg" alt="Photographer Shooting Scene">
+    <img *ngIf="!loggedIn" mat-card-image src="../assets/bannerphoto.jpg" alt="Photographer Shooting Scene">
+    <dropzone id="dropzoneContainer" class="dropzone-container" [config]="config" [useDropzoneClass]="true" [message]="'Click or drag images here to upload'" 
+      (error)="onUploadError($event)" (success)="onUploadSuccess($event)" (addedFile)="addFile = true"></dropzone>
+    <button [disabled]="!addFile" id="submit-button" mat-raised-button color="primary">Upload Image</button>
+    <button [disabled]="!addFile" id="reset-button" (click)="resetDropzoneImages()" mat-raised-button color="accent">Reset Upload Area</button>
     <mat-card-content>
       <h2 *ngIf="!loggedIn" id="welcome_text">Sign in/Sign up to start uploading and sharing your own images</h2>
       <h2 *ngIf="loggedIn">Welcome {{ name }}!</h2>

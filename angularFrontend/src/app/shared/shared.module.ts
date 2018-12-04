@@ -26,7 +26,8 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
         MatFormFieldModule,
         MatInputModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        DropzoneModule
     ],
     exports: [
         MatToolbarModule,
@@ -37,6 +38,12 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
         MatInputModule,
         FormsModule,
         ReactiveFormsModule
+    ],
+    providers: [
+      {
+        provide: DROPZONE_CONFIG,
+        useValue: DEFAULT_DROPZONE_CONFIG
+      }
     ]
 })
 export class SharedModule {}
