@@ -17,7 +17,7 @@ import { puts } from 'util';
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   // Change this to your upload POST address:
   method: 'put',
-  url: 'https://s3.amazonaws.com/imageuploader-main-bucket/',
+  url: 'https://s3.amazonaws.com/imageuploader-main-bucket/All_User_Images/',
   maxFilesize: 50,
   acceptedFiles: 'image/*'
  };

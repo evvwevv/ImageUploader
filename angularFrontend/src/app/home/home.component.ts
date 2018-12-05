@@ -119,7 +119,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   openTaggingDialog(): void {
     const dialogRef = this.dialog.open(TaggingDialogComponent, {
       width: '450px',
-      data: {categories: this.name, imageURL: this.imageUrl}
+      data: {categories: this.categories, imageURL: this.imageUrl}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -142,7 +142,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.submitButton = document.querySelector('#submit-button');
       this.submitButton.addEventListener('click', function () {
         console.log(dropzone.files[0].name);
-        dropzone.options.url = 'https://s3.amazonaws.com/imageuploader-main-bucket/' + dropzone.files[0].name;
+        dropzone.options.url = 'https://s3.amazonaws.com/imageuploader-main-bucket/All_User_Images/' + dropzone.files[0].name;
         dropzone.processQueue();
       });
     }
