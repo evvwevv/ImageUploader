@@ -8,7 +8,7 @@ import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
-import { HomeComponent } from './home/home.component';
+import { HomeComponent, ErrorDialogComponent } from './home/home.component';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
@@ -27,7 +27,11 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     AppComponent,
     LoginComponent,
     SignupComponent,
-    HomeComponent
+    HomeComponent,
+    ErrorDialogComponent
+  ],
+  entryComponents: [
+    ErrorDialogComponent
   ],
   imports: [
     BrowserModule,

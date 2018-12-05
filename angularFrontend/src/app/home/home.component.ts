@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild, ComponentRef, NgModule, AfterViewInit} from '@angular/core';
-import {Injectable} from '@angular/core';
+import {Injectable, Inject} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {AuthService} from './../auth/auth.service';
 import {
@@ -7,6 +7,22 @@ import {
   DropzoneConfigInterface
 } from 'ngx-dropzone-wrapper';
 import * as config from '../../assets/config.json';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+
+@Component({
+  selector: 'app-error-dialog',
+  templateUrl: 'error-dialog.html',
+})
+export class ErrorDialogComponent {
+
+  constructor(
+    public dialogRef: MatDialogRef<ErrorDialogComponent>) {}
+
+  onOkayClick(): void {
+    this.dialogRef.close();
+  }
+
+}
 
 @Component({
   selector: 'app-home',
@@ -27,13 +43,24 @@ export class HomeComponent implements OnInit, AfterViewInit {
     autoReset: null,
     errorReset: null,
     cancelReset: null,
-    autoProcessQueue: false
+    autoProcessQueue: false,
+    thumbnailHeight: 250,
+    thumbnailWidth: 250
   };
 
   @ViewChild(DropzoneComponent) componentRef?: DropzoneComponent;
 
   constructor(private http: HttpClient,
-              private auth: AuthService) {
+              private auth: AuthService,
+              public dialog: MatDialog) {
+  }
+
+  openErrorDialog(): void {
+    this.resetDropzoneImages();
+    this.dialog.open(ErrorDialogComponent, {
+      width: '450px',
+      autoFocus: true
+    });
   }
 
   ngAfterViewInit() {
@@ -41,6 +68,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
       const dropzone = this.componentRef.directiveRef.dropzone();
       this.submitButton = document.querySelector('#submit-button');
       this.submitButton.addEventListener('click', function () {
+        console.log(dropzone.files[0].name);
+        dropzone.options.url = 'https://s3.amazonaws.com/imageuploader-main-bucket/' + dropzone.files[0].name;
         dropzone.processQueue();
       });
     }
@@ -53,6 +82,16 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     });*/
     this.getData();
+  }
+
+  onUploadError(args: any) {
+    console.log('IMAGE UPLOAD ERROR:', args);
+    this.openErrorDialog();
+  }
+
+  onUploadSuccess(args: any) {
+    console.log('IMAGE UPLOAD SUCCESS:', args);
+    this.resetDropzoneImages();
   }
 
   resetDropzoneImages(): void {
@@ -74,6 +113,4 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }
     );
   }
-
-
 }
