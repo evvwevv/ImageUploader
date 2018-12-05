@@ -9,6 +9,11 @@ import {
 import * as config from '../../assets/config.json';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
+export interface TaggingDialogData {
+  categories: string[];
+  imageURL: string;
+}
+
 @Component({
   selector: 'app-error-dialog',
   templateUrl: 'error-dialog.html',
@@ -19,6 +24,29 @@ export class ErrorDialogComponent {
     public dialogRef: MatDialogRef<ErrorDialogComponent>) {}
 
   onOkayClick(): void {
+    this.dialogRef.close();
+  }
+
+}
+
+@Component({
+  selector: 'app-tagging-dialog',
+  templateUrl: 'tagging-dialog.html',
+})
+export class TaggingDialogComponent implements OnInit {
+  inDialogURL: string;
+  constructor(
+    public dialogRef: MatDialogRef<TaggingDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: TaggingDialogData) {
+      this.inDialogURL = data.imageURL;
+    }
+
+  ngOnInit() {
+    console.log(this.inDialogURL);
+    document.getElementById('fileimage').setAttribute('src', this.inDialogURL);
+  }
+
+  onSkipClick(): void {
     this.dialogRef.close();
   }
 
@@ -36,6 +64,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   loggedIn = false;
   addFile = false;
   submitButton;
+  categories: string[];
+  imageUrl: string;
 
   public config: DropzoneConfigInterface = {
     clickable: true,
@@ -53,6 +83,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
   constructor(private http: HttpClient,
               private auth: AuthService,
               public dialog: MatDialog) {
+  }
+
+  openTaggingDialog(): void {
+    const dialogRef = this.dialog.open(TaggingDialogComponent, {
+      width: '450px',
+      data: {categories: this.name, imageURL: this.imageUrl}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 
   openErrorDialog(): void {
@@ -90,8 +131,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   onUploadSuccess(args: any) {
+    const dropzone = this.componentRef.directiveRef.dropzone();
     console.log('IMAGE UPLOAD SUCCESS:', args);
+    this.imageUrl = dropzone.options.url;
     this.resetDropzoneImages();
+    this.openTaggingDialog();
   }
 
   resetDropzoneImages(): void {
