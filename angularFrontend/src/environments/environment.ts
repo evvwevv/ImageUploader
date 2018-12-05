@@ -7,7 +7,11 @@ export const environment = {
     Auth: {
       region: 'us-west-2',
       userPoolId: 'us-west-2_FzbgfsUaC',
-      userPoolWebClientId: '738iqpt7l4vojqptqis1pqj9hc'
+      userPoolWebClientId: '738iqpt7l4vojqptqis1pqj9hc',
+      identityPoolId: 'us-west-2:01f59b76-1146-44cf-9d85-1db4c50e3f9e'
+    },
+    Storage: {
+      bucket: 'imageuploader-main-bucket'
     }
   },
   production: false,

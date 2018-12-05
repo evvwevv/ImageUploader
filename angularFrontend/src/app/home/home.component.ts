@@ -13,7 +13,7 @@ import { MatChipInputEvent } from '@angular/material';
 
 export interface TaggingDialogData {
   categories: string[];
-  imageURL: string;
+  localImageURL: string;
 }
 
 @Component({
@@ -46,7 +46,7 @@ export class TaggingDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<TaggingDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: TaggingDialogData) {
-      this.inDialogURL = data.imageURL;
+      this.inDialogURL = data.localImageURL;
     }
 
   add(event: MatChipInputEvent): void {
@@ -69,7 +69,6 @@ export class TaggingDialogComponent implements OnInit {
     }
   }
   ngOnInit() {
-    console.log(this.inDialogURL);
     document.getElementById('fileimage').setAttribute('src', this.inDialogURL);
   }
 
@@ -119,7 +118,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   openTaggingDialog(): void {
     const dialogRef = this.dialog.open(TaggingDialogComponent, {
       width: '450px',
-      data: {categories: this.categories, imageURL: this.imageUrl}
+      data: {categories: this.categories, localImageURL: this.imageUrl}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -165,7 +164,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   onUploadSuccess(args: any) {
     const dropzone = this.componentRef.directiveRef.dropzone();
     console.log('IMAGE UPLOAD SUCCESS:', args);
-    this.imageUrl = dropzone.options.url;
+    this.imageUrl = dropzone.files[0].dataURL;
     this.resetDropzoneImages();
     this.openTaggingDialog();
   }
