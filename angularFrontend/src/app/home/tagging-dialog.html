@@ -1,8 +1,22 @@
 <h1 mat-dialog-title>Add tags to image</h1>
 <div mat-dialog-content>
     <img id="fileimage" src="https://s3.amazonaws.com/imageuploader-main-bucket/maymayface.png">
+    <mat-form-field style="width: 100%;">
+        <mat-chip-list #chipList>
+            <mat-chip *ngFor="let category of categories" [selectable]="selectable"
+                [removable]="removable" (removed)="remove(category)">
+                {{category}}
+                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+            <input placeholder="Enter Image Categories"
+                [matChipInputFor]="chipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                [matChipInputAddOnBlur]="addOnBlur"
+                (matChipInputTokenEnd)="add($event)">
+        </mat-chip-list>
+    </mat-form-field>
 </div>
 <div mat-dialog-actions>
-    <button mat-button>Done</button>
+    <button mat-button color="primary" [mat-dialog-close]="data.categories" (click)="onDoneClick()" cdkFocusInitial>Done</button>
     <button mat-button (click)="onSkipClick()">Skip Tagging</button>
 </div>

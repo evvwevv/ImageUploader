@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material';
+import { MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
     imports: [
@@ -18,7 +19,8 @@ import { MatDialogModule } from '@angular/material';
         MatInputModule,
         FormsModule,
         ReactiveFormsModule,
-        MatDialogModule
+        MatDialogModule,
+        MatChipsModule
     ],
     exports: [
         MatToolbarModule,
@@ -29,7 +31,8 @@ import { MatDialogModule } from '@angular/material';
         MatInputModule,
         FormsModule,
         ReactiveFormsModule,
-        MatDialogModule
+        MatDialogModule,
+        MatChipsModule
     ]
 })
 export class SharedModule {}

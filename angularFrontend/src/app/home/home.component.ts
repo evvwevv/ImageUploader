@@ -1,5 +1,6 @@
 import {Component, OnInit, ViewChild, ComponentRef, NgModule, AfterViewInit} from '@angular/core';
 import {Injectable, Inject} from '@angular/core';
+import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {HttpClient} from '@angular/common/http';
 import {AuthService} from './../auth/auth.service';
 import {
@@ -8,6 +9,7 @@ import {
 } from 'ngx-dropzone-wrapper';
 import * as config from '../../assets/config.json';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatChipInputEvent } from '@angular/material';
 
 export interface TaggingDialogData {
   categories: string[];
@@ -35,15 +37,44 @@ export class ErrorDialogComponent {
 })
 export class TaggingDialogComponent implements OnInit {
   inDialogURL: string;
+  categories: string[] = [];
+  visible = true;
+  selectable = true;
+  removable = true;
+  addOnBlur = true;
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   constructor(
     public dialogRef: MatDialogRef<TaggingDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: TaggingDialogData) {
       this.inDialogURL = data.imageURL;
     }
 
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+
+    if ((value || '').trim()) {
+      this.categories.push(value.trim());
+    }
+
+    if (input) {
+      input.value = '';
+    }
+  }
+  remove(category: string): void {
+    const index = this.categories.indexOf(category);
+
+    if (index >= 0) {
+      this.categories.splice(index, 1);
+    }
+  }
   ngOnInit() {
     console.log(this.inDialogURL);
     document.getElementById('fileimage').setAttribute('src', this.inDialogURL);
+  }
+
+  onDoneClick(): void {
+    this.dialogRef.close(this.categories);
   }
 
   onSkipClick(): void {
@@ -92,7 +123,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+      this.categories = result;
+      console.log(this.categories);
     });
   }
 
