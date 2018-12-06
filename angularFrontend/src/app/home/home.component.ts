@@ -14,6 +14,7 @@ import { MatChipInputEvent } from '@angular/material';
 export interface TaggingDialogData {
   categories: string[];
   localImageURL: string;
+  s3ImageURL: string;
 }
 
 export interface ErrorDialogData {
@@ -42,6 +43,7 @@ export class ErrorDialogComponent {
   templateUrl: 'tagging-dialog.html',
 })
 export class TaggingDialogComponent implements OnInit {
+  doneTagging = false;
   inDialogURL: string;
   categories: string[] = [];
   visible = true;
@@ -102,6 +104,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   submitButton;
   categories: string[];
   imageUrl: string;
+  s3ImageUrl: string;
   errorMsg = 'An error occured when uploading the selected image. For more information refer to your browser console.';
   errorTitle = 'Upload Error';
 
@@ -126,7 +129,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   openTaggingDialog(): void {
     const dialogRef = this.dialog.open(TaggingDialogComponent, {
       width: '450px',
-      data: {categories: this.categories, localImageURL: this.imageUrl}
+      data: {categories: this.categories, localImageURL: this.imageUrl, s3ImageURL: this.s3ImageUrl}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -149,7 +152,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
       const dropzone = this.componentRef.directiveRef.dropzone();
       this.submitButton = document.querySelector('#submit-button');
       this.submitButton.addEventListener('click', function () {
-        console.log(dropzone.files[0].name);
         dropzone.options.url = 'https://s3.amazonaws.com/imageuploader-main-bucket/All_User_Images/' + dropzone.files[0].name;
         dropzone.processQueue();
       });
@@ -174,6 +176,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     const dropzone = this.componentRef.directiveRef.dropzone();
     console.log('IMAGE UPLOAD SUCCESS:', args);
     this.imageUrl = dropzone.files[0].dataURL;
+    this.s3ImageUrl = dropzone.options.url;
     this.resetDropzoneImages();
     this.openTaggingDialog();
   }

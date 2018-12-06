@@ -1,19 +1,23 @@
-<h1 mat-dialog-title>Add tags to image</h1>
+<h1 mat-dialog-title>Finalize Upload</h1>
 <div mat-dialog-content>
     <img style="max-width: 400px;" id="fileimage" src="">
-    <mat-form-field style="width: 100%;">
+    <mat-form-field style="width: 100%;" *ngIf="!doneTagging">
         <mat-chip-list #chipList>
             <mat-chip *ngFor="let category of categories" [selectable]="selectable"
                 [removable]="removable" (removed)="remove(category)">
                 {{category}}
                 <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
             </mat-chip>
-            <input placeholder="Enter Image Categories"
+            <input placeholder="Enter tags to help find the image later"
                 [matChipInputFor]="chipList"
                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                 [matChipInputAddOnBlur]="addOnBlur"
                 (matChipInputTokenEnd)="add($event)">
         </mat-chip-list>
+    </mat-form-field>
+    <p style="font-size: 15px; font-family: Roboto, Helvetica Neue, sans-serif">Thanks for uploading! Your Image is now in the cloud and can be downloaded from:</p>
+    <mat-form-field style="width: 100%;" *ngIf="!doneTagging">
+        <input onfocus="this.select()" matInput [readonly]="true" value="{{data.s3ImageURL}}">
     </mat-form-field>
 </div>
 <div mat-dialog-actions>
