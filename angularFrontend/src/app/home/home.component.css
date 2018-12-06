@@ -24,3 +24,7 @@
     width : 150px;
     margin-left: 5px;
 }
+
+[hidden] {
+    display: none !important;
+}
