@@ -7,12 +7,12 @@
         <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
       </mat-form-field>
       <mat-form-field>
-        <input matInput class="form-control" placeholder="Enter your password" [type]="hide ? 'password' : 'text'"
-               formControlName="password">
+        <input matInput class="form-control" placeholder="Enter a password (must be at least 8 characters with at least one number)" [type]="hide ? 'password' : 'text'"
+               formControlName="password" required>
         <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
       </mat-form-field>
       <mat-form-field>
-        <input matInput placeholder="Reenter your password" [type]="hide ? 'password' : 'text'">
+        <input matInput placeholder="Reenter your password" [type]="hide ? 'password' : 'text'" required>
         <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
       </mat-form-field>
       <button type="submit" mat-raised-button color="primary">Create an Account</button>
