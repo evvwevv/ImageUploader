@@ -1,7 +1,6 @@
-<h1 mat-dialog-title>Upload Error</h1>
+<h1 mat-dialog-title>{{data.errorTitle}}</h1>
 <div mat-dialog-content>
-    <p style="font-size: 15px; font-family: Roboto, Helvetica Neue, sans-serif">
-    An error occured when uploading the selected image. For more information refer to your browser console.</p>
+    <p style="font-size: 15px; font-family: Roboto, Helvetica Neue, sans-serif">{{data.errorMsg}}</p>
 </div>
 <div mat-dialog-actions>
     <button mat-button (click)="onOkayClick()">Okay</button>

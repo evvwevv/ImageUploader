@@ -16,6 +16,11 @@ export interface TaggingDialogData {
   localImageURL: string;
 }
 
+export interface ErrorDialogData {
+  errorTitle: string;
+  errorMsg: string;
+}
+
 @Component({
   selector: 'app-error-dialog',
   templateUrl: 'error-dialog.html',
@@ -23,7 +28,8 @@ export interface TaggingDialogData {
 export class ErrorDialogComponent {
 
   constructor(
-    public dialogRef: MatDialogRef<ErrorDialogComponent>) {}
+    public dialogRef: MatDialogRef<ErrorDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: ErrorDialogData) {}
 
   onOkayClick(): void {
     this.dialogRef.close();
@@ -96,6 +102,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   submitButton;
   categories: string[];
   imageUrl: string;
+  errorMsg = 'An error occured when uploading the selected image. For more information refer to your browser console.';
+  errorTitle = 'Upload Error';
 
   public config: DropzoneConfigInterface = {
     clickable: true,
@@ -131,7 +139,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.resetDropzoneImages();
     this.dialog.open(ErrorDialogComponent, {
       width: '450px',
-      autoFocus: true
+      autoFocus: true,
+      data: {errorMsg: this.errorMsg, errorTitle: this.errorTitle}
     });
   }
 
