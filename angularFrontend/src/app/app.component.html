@@ -3,6 +3,7 @@
     <span>Image Uploader</span>
     <span class="toolbar-spacer"></span>
     <button mat-button (click)="onUploadClick()" *ngIf="loggedIn">Upload</button>
+    <button mat-button (click)="onGalleryClick()" *ngIf="loggedIn">Gallery</button>
     <button mat-button (click)="onSignInClick()" *ngIf="!loggedIn">Sign In</button>
     <button mat-button (click)="onNewUserClick()" *ngIf="!loggedIn">New User?</button>
     <button mat-button (click)="onSignOutClick()" *ngIf="loggedIn">Sign Out</button>

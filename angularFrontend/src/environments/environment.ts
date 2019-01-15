@@ -12,6 +12,10 @@ export const environment = {
     },
     Storage: {
       bucket: 'imageuploader-main-bucket'
+    },
+    Api: {
+      region: 'us-east-1',
+      url: 'https://c2ecjqoud4.execute-api.us-east-1.amazonaws.com/test/'
     }
   },
   production: false,

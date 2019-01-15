@@ -14,7 +14,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   subscription: Subscription;
   username: String;
   loggedIn: boolean;
-
+  uploaded = false;
   constructor(private router: Router, public auth: AuthService, private cdr: ChangeDetectorRef) {
     this.username = localStorage.getItem(
       environment.localstorageBaseKey + 'LastAuthUser'
@@ -57,6 +57,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   public onNewUserClick() {
     this.router.navigate(['./signup']);
+  }
+
+  public onGalleryClick() {
+    this.router.navigate(['./gallery'])
   }
 
   public onSignOutClick() {
