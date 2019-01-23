@@ -1,0 +1,9 @@
+.search-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.search-card {
+    max-width: 400px;
+    margin: 30px auto;
+}

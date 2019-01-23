@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material';
 import { MatChipsModule } from '@angular/material/chips';
+import {MatGridListModule} from '@angular/material/grid-list'; 
 
 @NgModule({
     imports: [
@@ -20,7 +21,8 @@ import { MatChipsModule } from '@angular/material/chips';
         FormsModule,
         ReactiveFormsModule,
         MatDialogModule,
-        MatChipsModule
+        MatChipsModule,
+        MatGridListModule
     ],
     exports: [
         MatToolbarModule,
@@ -32,7 +34,8 @@ import { MatChipsModule } from '@angular/material/chips';
         FormsModule,
         ReactiveFormsModule,
         MatDialogModule,
-        MatChipsModule
+        MatChipsModule,
+        MatGridListModule
     ]
 })
 export class SharedModule {}
