@@ -3,6 +3,8 @@ import {Injectable, Inject} from '@angular/core';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {HttpClient} from '@angular/common/http';
 import {AuthService} from './../auth/auth.service';
+import {StoreImageService} from './../store-image.service'
+import {ImageData} from './../imageData'
 import {
   DropzoneComponent, DropzoneDirective,
   DropzoneConfigInterface
@@ -104,13 +106,20 @@ export class HomeComponent implements OnInit, AfterViewInit {
   submitButton;
   categories: string[];
   imageUrl: string;
+  imageName: string;
   s3ImageUrl: string;
   errorMsg = 'An error occured when uploading the selected image. For more information refer to your browser console.';
   errorTitle = 'Upload Error';
+  saveError;
 
   public config: DropzoneConfigInterface = {
     clickable: true,
     maxFiles: 1,
+    headers: {
+      "Content-Type": "image/jpeg",
+      "Content-Encoding": "image/jpeg",
+      "x-amz-acl": "public-read-write"
+    },
     autoReset: null,
     errorReset: null,
     cancelReset: null,
@@ -123,6 +132,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   constructor(private http: HttpClient,
               private auth: AuthService,
+              private storeImageService: StoreImageService,
               public dialog: MatDialog) {
   }
 
@@ -135,6 +145,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe(result => {
       this.categories = result;
       console.log(this.categories);
+      this.saveImageAttributes()
     });
   }
 
@@ -145,6 +156,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
       autoFocus: true,
       data: {errorMsg: this.errorMsg, errorTitle: this.errorTitle}
     });
+  }
+
+  saveImageAttributes(): void {
+    let curImg = new ImageData(this.name, this.imageName, this.categories)
+    this.storeImageService.post(curImg).subscribe(curImg => {
+    }, error => (this.saveError = error));
   }
 
   ngAfterViewInit() {
@@ -176,6 +193,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     const dropzone = this.componentRef.directiveRef.dropzone();
     console.log('IMAGE UPLOAD SUCCESS:', args);
     this.imageUrl = dropzone.files[0].dataURL;
+    this.imageName = dropzone.files[0].name;
     this.s3ImageUrl = dropzone.options.url;
     this.resetDropzoneImages();
     this.openTaggingDialog();
