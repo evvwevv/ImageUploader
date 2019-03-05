@@ -116,9 +116,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     clickable: true,
     maxFiles: 1,
     headers: {
-      "Content-Type": "image/jpeg",
-      "Content-Encoding": "image/jpeg",
-      "x-amz-acl": "public-read-write"
+      "Content-Type": "image/png",
+      "x-amz-acl": "bucket-owner-full-control"
     },
     autoReset: null,
     errorReset: null,
@@ -187,6 +186,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
   onUploadError(args: any) {
     console.log('IMAGE UPLOAD ERROR:', args);
     this.openErrorDialog();
+  }
+
+  stripFormData(data) {
+    let xhr = data[1];
+    let file = data[0];
+    var _send = xhr.send;
+    xhr.send = function() {
+      _send.call(xhr, file);
+    };
   }
 
   onUploadSuccess(args: any) {
