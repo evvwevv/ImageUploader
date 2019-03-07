@@ -49,19 +49,16 @@ def addImageAssociatedData(event, context):
             resultArr = cur.fetchall() # returns a list of dict
         
             for i in range(len(resultArr)):
-                #if resultArr[i]['userName'] == '!':
-                #    curTempUserRow = resultArr[i] # save for when username isn't '!'
-                #elif 
-                
+               
                 if resultArr[i]['userName'] == passedInUserName:
                     #username already present in table
                     
                     # only run this query after categories list is updated
                     updateUserRow_Query = ("INSERT INTO User_Account "
-                        "(userName, categories, imageName, refToImage, imgDictByTag, canView) "
-                        "VALUES (%s, JSON_MERGE_PRESERVE(JSON_ARRAY(), %s), JSON_MERGE_PRESERVE(JSON_ARRAY(), %s), JSON_MERGE_PRESERVE(JSON_ARRAY(), %s), %s, %s) "
+                        "(userName, categories, imageName, refToImage, imgDictByTag, canView, imgDictByImage) "
+                        "VALUES (%s, JSON_MERGE_PRESERVE(JSON_ARRAY(), %s), JSON_MERGE_PRESERVE(JSON_ARRAY(), %s), JSON_MERGE_PRESERVE(JSON_ARRAY(), %s), %s, %s, %s) "
                         "on duplicate key "
-                        "update imageName = values(imageName), refToImage = values(refToImage), imgDictByTag = values(imgDictByTag), canView = values(canView)")
+                        "update categories = values(categories), imageName = values(imageName), refToImage = values(refToImage), imgDictByTag = values(imgDictByTag), canView = values(canView), imgDictByImage = values(imgDictByImage)")
                     
                     #json.dumps converts python data to JSON formatted data
                     #json.loads converts json formatted data to python data
@@ -70,8 +67,8 @@ def addImageAssociatedData(event, context):
                     
                     oldTags = json.loads(resultArr[i]['categories'])
                     newTags = passedInTags
-                    combinedTags = list(set(oldTags + newTags))
-                    tagsArg = json.dumps(combinedTags)
+                    #combinedTags = list(set(oldTags + newTags))
+                    tagsArg = json.dumps(oldTags)
                     
                     oldImages = json.loads(resultArr[i]['imageName'])
                     newImages = passedInImageName
@@ -88,18 +85,84 @@ def addImageAssociatedData(event, context):
                     curImgDict = json.loads(resultArr[i]['imgDictByTag'])
                     
                     #note: only want to associate passed in tags with uploaded image
-                    # later: if deleting a tag from combinedTags, must del corresponding
-                    # tag from imgDictByTag
-                    for t in newTags:
-                        if t not in curImgDict:
-                            curImgDict[t] = newImageL
+                    for n in newTags:
+                        if n not in curImgDict:
+                            curImgDict[n] = newImageL
+                            logger.info("SUCCESS: added new key-value pair to imgDictByTag")
                         else:
-                            #uploadedImgName = json.loads(curTempUserRow['imageName'])[0]
-                            if passedInImageName not in curImgDict[t]:
-                                curImgDict[t].append(passedInImageName)
+                            
+                            if curImgDict[n] == None:
+                                curImgDict[n] = newImageL
+                                logger.info("SUCCESS: added new key-value pair to imgDictByTag; tag is in dictionary, but empty list")
+                            else:
                                 
+                                if passedInImageName not in curImgDict[n]:
+                                    curImgDict[n].append(passedInImageName)
+                                    logger.info("SUCCESS: already exists in both new tags and dict, ensured image in list for that tag")
+                           
+                    # delete tags present in dict, but not new tags.
+                    
+                    curKeys = curImgDict.keys() 
+                    copyOfKeys = []
+                    
+                    for keyss in curKeys:
+                        copyOfKeys.append(keyss)
+                    
+                    for k in copyOfKeys:
+                
+                        #do not use combinedTags as after adding tag to it, this condition never triggers.
+                        if k not in newTags: 
+                            
+                            if curImgDict[k] != None and len(curImgDict[k]) > 0:
+                                
+                                if passedInImageName in curImgDict[k]:
+                                    curImgDict[k].remove(passedInImageName)
+                                    logger.info("Removing image %s from key[tag] not found in new tags %s...", passedInImageName, k)
+                                
+                                    if len(curImgDict[k]) == 0:
+                                        del curImgDict[k]
+                                        logger.info("Empty image list...Removing key[tag] not found in new tags %s from dict...", k)
+                               
                     imageDictArg = json.dumps(curImgDict)   
                     
+                    # iamge dict indexed by image name, with value the list of tags
+                    curImgDictByImage = json.loads(resultArr[i]['imgDictByImage'])
+                 
+                    
+                    #newImages is just one image and not a list
+                    if newImages not in curImgDictByImage:
+                        newTagsList = list(passedInTags)
+                        curImgDictByImage[newImages] = newTagsList
+                        logger.info("SUCCESS: added new key-value pair to imgDictByImage and user already exists.")
+                    else:
+                        
+                        if curImgDictByImage[newImages] == None:
+                            newTagsList = list(passedInTags)
+                            curImgDictByImage[newImages] = newTagsList
+                            logger.info("SUCCESS: added new key-value pair to imgDictByImage; image key exists, but no tags list ; user already exists.")
+                        else:
+                            
+                            for t in newTags:
+                                if t not in curImgDictByImage[newImages]:
+                                    curImgDictByImage[newImages].append(t)
+                                    logger.info("SUCCESS: already exists in both new tags and list of tags in dicts at key, ensured tag in list for that image")
+                                
+                            #delete tags present in list of tags, but not in newTags
+                           
+                            curTagsListCopy = curImgDictByImage[newImages].copy()
+                                
+                            for t in curTagsListCopy:
+                                if t not in newTags:
+                                    curImgDictByImage[newImages].remove(t)
+                                    logger.info("Removing tag %s from key (imagename) %s...", t, newImages)
+                                    
+                        
+                    
+                    
+                        
+                    imageDictByImageArg = json.dumps(curImgDictByImage)
+                    
+                    # who has permission to view
                     canViewDict = json.loads(resultArr[i]['canView'])
                     
                     #ensure username is in there
@@ -113,7 +176,8 @@ def addImageAssociatedData(event, context):
                         imagesArg, 
                         refsArg,
                         imageDictArg,
-                        canViewArg)
+                        canViewArg,
+                        imageDictByImageArg)
                     
                     cur.execute(updateUserRow_Query, updateUserRow_Query_Data)
                     
@@ -132,15 +196,18 @@ def addImageAssociatedData(event, context):
                 logger.info("Passed in username not found in database. Adding it to database...")
                 
                 addNewUser_Query = ("INSERT INTO User_Account "
-                    "(userName, categories, imageName, refToImage, imgDictByTag, canView) "
-                    "VALUES (%s, JSON_MERGE_PRESERVE(JSON_ARRAY(), %s), JSON_MERGE_PRESERVE(JSON_ARRAY(), %s), JSON_MERGE_PRESERVE(JSON_ARRAY(), %s), %s, %s) "
+                    "(userName, categories, imageName, refToImage, imgDictByTag, canView, imgDictByImage) "
+                    "VALUES (%s, JSON_MERGE_PRESERVE(JSON_ARRAY(), %s), JSON_MERGE_PRESERVE(JSON_ARRAY(), %s), JSON_MERGE_PRESERVE(JSON_ARRAY(), %s), %s, %s, %s) "
                     "on duplicate key "
-                    "update imageName = values(imageName), refToImage = values(refToImage), imgDictByTag = values(imgDictByTag), canView = values(canView)")
+                    "update imageName = values(imageName), refToImage = values(refToImage), imgDictByTag = values(imgDictByTag), canView = values(canView), imgDictByImage = values(imgDictByImage)")
                     
                 curUserName = passedInUserName
                 
                 #must turn to py list before calling dumps on it
-                tagsArg = json.dumps(list(passedInTags))
+                #tagsL = list(passedInTags)
+                dummyTagsList = [] #don't bother updating this field
+                tagsL = list(passedInTags)
+                tagsArg = json.dumps(dummyTagsList)
                 
                 newImage = passedInImageName
                 newImageL = []
@@ -166,13 +233,19 @@ def addImageAssociatedData(event, context):
                     canViewDict[curUserName] = True
                 
                 canViewArg = json.dumps(canViewDict)
-                    
+                
+                imagesIndexedByImage = {}
+                imagesIndexedByImage[newImage] = tagsL
+                
+                imageDictByImage = json.dumps(imagesIndexedByImage)
+                
                 addNewUser_Data = (curUserName, 
                     tagsArg, 
                     imagesArg, 
                     refsArg,
                     imageDict,
-                    canViewArg)
+                    canViewArg,
+                    imageDictByImage)
                         
                 cur.execute(addNewUser_Query, addNewUser_Data)
                     
@@ -210,5 +283,6 @@ def make_new_get_user_response(row):
             'imageName': row['imageName'],
             'refToImage': row['refToImage'],
             'imgDictByTag': row['imgDictByTag'],
-            'canView': row['canView']
+            'canView': row['canView'],
+            'imgDictByImage': row['imgDictByImage']
            }
