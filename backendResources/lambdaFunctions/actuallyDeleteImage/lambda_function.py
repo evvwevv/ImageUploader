@@ -56,10 +56,10 @@ def delActualImage(event, context):
                     # only run this query after categories list is updated
                     # for tags and imagenames, duplicates are NOT currently removed
                     updateUserRow_Query = ("INSERT INTO User_Account "
-                        "(userName, categories, imageName, refToImage, imgDictByTag, canView) "
-                        "VALUES (%s, JSON_MERGE_PRESERVE(JSON_ARRAY(), %s), JSON_MERGE_PRESERVE(JSON_ARRAY(), %s), JSON_MERGE_PRESERVE(JSON_ARRAY(), %s), %s, %s) "
+                        "(userName, categories, imageName, refToImage, imgDictByTag, canView, imgDictByImage) "
+                        "VALUES (%s, JSON_MERGE_PRESERVE(JSON_ARRAY(), %s), JSON_MERGE_PRESERVE(JSON_ARRAY(), %s), JSON_MERGE_PRESERVE(JSON_ARRAY(), %s), %s, %s, %s) "
                         "on duplicate key "
-                        "update categories = values(categories), imageName = values(imageName), refToImage = values(refToImage), imgDictByTag = values(imgDictByTag), canView = values(canView)")
+                        "update categories = values(categories), imageName = values(imageName), refToImage = values(refToImage), imgDictByTag = values(imgDictByTag), canView = values(canView), imgDictByImage = values(imgDictByImage)")
                     
                     #json.dumps converts python data to JSON formatted data
                     #json.loads converts json formatted data to python data
@@ -67,6 +67,7 @@ def delActualImage(event, context):
                     curUserName = passedInUserName
                     
                     oldTags = json.loads(resultArr[i]['categories'])
+                    tagsArg = json.dumps(oldTags)
                     
                     oldImages = json.loads(resultArr[i]['imageName'])
                     imageToBeDel = passedInImageName 
@@ -99,41 +100,53 @@ def delActualImage(event, context):
                             curImgDict[t].remove(imageToBeDel)
                             if len(curImgDict[t]) == 0:
                                 del curImgDict[t]
-                                oldTags.remove(t)
-                        else:
-                            logger.info("image to be deleted somehow not found in list of images for a tag.")
-                            body = {
-                                'false': "Failure to delete: image to be deleted somehow not found in list of images for a tag.",
-                                'imageName': imageToBeDel
-                            }
-                            break
+                                
                     
-                    tagsArg = json.dumps(oldTags)
+                    imageDictArg = json.dumps(curImgDict)
                     
-                    if body != None:
-                        break
-                    else:
-                        imageDictArg = json.dumps(curImgDict)   
+                        #There may be more tags [keys] further down in dict with target image to delete!
+                        
+                        #else:
+                        #    logger.info("image to be deleted somehow not found in list of images for a tag.")
+                        #    body = {
+                        #        'false': "Failure to delete: image to be deleted somehow not found in list of images for a tag.",
+                        #        'imageName': imageToBeDel
+                        #    }
+                        #    break
                     
-                        canViewDict = json.loads(resultArr[i]['canView'])
-                        canViewArg = json.dumps(canViewDict)
+                    canViewDict = json.loads(resultArr[i]['canView'])
+                    canViewArg = json.dumps(canViewDict)
                     
-                        updateUserRow_Query_Data = (curUserName, 
-                            tagsArg, 
-                            imagesArg, 
-                            refsArg,
-                            imageDictArg,
-                            canViewArg)
+                    curImgDictByImage = json.loads(resultArr[i]['imgDictByImage'])
                     
-                        cur.execute(updateUserRow_Query, updateUserRow_Query_Data)
+                    curKeys = curImgDictByImage.keys() 
+                    copyOfKeys = []
                     
-                        conn.commit()
+                    for keyss in curKeys:
+                        copyOfKeys.append(keyss)
                     
-                        #update resultArr with a new select statement...
-                        cur.execute(getAllRowsQuery)
-                        resultArr = cur.fetchall() # returns a list of dict
-                        body = make_new_get_user_response(resultArr[i])
-                        break
+                    if imageToBeDel in copyOfKeys:
+                        del curImgDictByImage[imageToBeDel]
+                    
+                    imageDictByImageArg = json.dumps(curImgDictByImage)
+                    
+                    updateUserRow_Query_Data = (curUserName, 
+                        tagsArg, 
+                        imagesArg, 
+                        refsArg,
+                        imageDictArg,
+                        canViewArg,
+                        imageDictByImageArg)
+                    
+                    cur.execute(updateUserRow_Query, updateUserRow_Query_Data)
+                    
+                    conn.commit()
+                    
+                    #update resultArr with a new select statement...
+                    cur.execute(getAllRowsQuery)
+                    resultArr = cur.fetchall() # returns a list of dict
+                    body = make_new_get_user_response(resultArr[i])
+                    break
                 
             #--------------------------
             #if body is still None, that means
@@ -168,5 +181,6 @@ def make_new_get_user_response(row):
             'imageName': row['imageName'],
             'refToImage': row['refToImage'],
             'imgDictByTag': row['imgDictByTag'],
-            'canView': row['canView']
+            'canView': row['canView'],
+            'imgDictByImage': row['imgDictByImage']
            }
