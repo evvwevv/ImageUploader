@@ -175,11 +175,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    /*this.http.get(config.api).subscribe((res) => {
-      console.log(res);
-      this.name = String(res);
-
-    });*/
     this.getData();
   }
 

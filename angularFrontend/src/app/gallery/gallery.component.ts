@@ -14,26 +14,9 @@ export class GalleryComponent implements OnInit {
 
   constructor(private galleryService: GalleryService) { }
 
-  createImageFromBlob(image: Blob) {
-    let reader = new FileReader();
-    reader.addEventListener("load", () => {
-       this.imageToShow = reader.result;
-    }, false);
- 
-    if (image) {
-       reader.readAsDataURL(image);
-    }
-  }
-
   getImageFromService() {
     this.isImageLoading = true;
-    this.galleryService.getImage('https://s3.amazonaws.com/imageuploader-main-bucket/All_User_Images/Pikachu.jpg').subscribe(data => {
-      this.createImageFromBlob(data);
-      this.isImageLoading = false;
-    }, error => {
-      this.isImageLoading = false;
-      console.log(error);
-    });
+    this.galleryService.getImages();
   }
 
   ngOnInit() {
