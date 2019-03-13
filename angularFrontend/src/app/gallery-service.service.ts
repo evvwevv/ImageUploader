@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Response } from '@angular/http';
 import {AuthService} from './auth/auth.service';
 import {GalleryImage} from './galleryImage';
 import {map} from 'rxjs/operators';
-import 'rxjs/add/operator/map'
 
 
 
@@ -19,12 +19,16 @@ export class GalleryService {
   constructor(private http: HttpClient,
               private auth: AuthService) { }
 
-  getImages(username: string): Observable<GalleryImage[]> {
+  getImages(username: string): Observable<any> {
     const httpOptions = {
       params: new HttpParams().set('username', username),
       headers: new HttpHeaders({'Content-Type': 'application/json'})
     };
-    return this.http.get(this.getAllImagesUrl, httpOptions).map()
+    return this.http.get(this.getAllImagesUrl, httpOptions).pipe(
+      map((resp: Response) =>  
+        this.gatherGalleryImages(resp)
+      )
+    )
     /*return this.auth.getData().pipe(
       map(result => {
         console.log("getting images...");
@@ -36,17 +40,17 @@ export class GalleryService {
   gatherGalleryImages(resp): GalleryImage[] {
     let galleryImages: GalleryImage[] = [];
     console.log(resp);
-    let dic = JSON.parse(resp);
+    let dic = JSON.parse(resp.body);
     console.log(dic);
     for (var key in dic) {
-      galleryImages.push(new GalleryImage(this.s3URL.concat(key), dic[key]));
+      galleryImages.push(new GalleryImage(this.s3URL.concat(key), key, dic[key]));
       console.log(this.s3URL.concat(key));
       console.log(dic[key]);
     }
     return galleryImages;
   }
             
-  makeImagesRequest(username: string): GalleryImage[] {
+  /*makeImagesRequest(username: string): GalleryImage[] {
     const httpOptions = {
       params: new HttpParams().set('username', username),
       headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -62,5 +66,5 @@ export class GalleryService {
     );
     console.log("returning nothing...");
     return [];
-  }
+  }*/
 }

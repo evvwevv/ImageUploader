@@ -1,0 +1,25 @@
+<h1 mat-dialog-title>{{galleryImage.imageName}}</h1>
+<div mat-dialog-content>
+    <img style="max-width: 400px;" id="fileimage" src="">
+    <mat-form-field style="width: 100%;">
+            <mat-chip-list #chipList>
+                <mat-chip *ngFor="let tag of tempTags" [selectable]="selectable"
+                    [removable]="removable" (removed)="remove(tag)">
+                    {{tag}}
+                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                </mat-chip>
+                <input placeholder="Enter tags to help find the image later"
+                    [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    [matChipInputAddOnBlur]="addOnBlur"
+                    (matChipInputTokenEnd)="add($event)">
+            </mat-chip-list>
+        </mat-form-field>
+        <mat-form-field style="width: 100%;">
+            <input onfocus="this.select()" matInput [readonly]="true" value="{{galleryImage.imageUrl}}">
+        </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button [disabled]="hasNotModifiedTags" color="primary" [mat-dialog-close]="data.galleryImage" (click)="onSaveClick()" cdkFocusInitial>Save</button>
+    <button mat-button (click)="onCancelClick()">Cancel</button>
+</div>

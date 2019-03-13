@@ -8,8 +8,14 @@
   </mat-card-content>
 </mat-card>
 <mat-grid-list cols="4" rowHeight="500px">
-  <mat-grid-tile>
-    <img src="../../assets/bad-animator.jpg" alt="bad-animator.jpg" layout-fill>
+  <mat-grid-tile *ngFor="let galleryImage of galleryImages$" (click)="openGalleryImageDialog(galleryImage)">
+    <img src={{galleryImage.imageUrl}}>
+    <mat-grid-tile-footer>
+      <h3>{{galleryImage.imageName}}</h3>
+    </mat-grid-tile-footer>
+  </mat-grid-tile>
+
+ <!-- <img src="../../assets/bad-animator.jpg" alt="bad-animator.jpg" layout-fill>
     <mat-grid-tile-footer>
       <h3>stallman.jpg</h3>
     </mat-grid-tile-footer>
@@ -31,5 +37,5 @@
     <mat-grid-tile-footer>
       <h3>scene.jpg</h3>
     </mat-grid-tile-footer>
-  </mat-grid-tile>
+  </mat-grid-tile>-->
 </mat-grid-list>

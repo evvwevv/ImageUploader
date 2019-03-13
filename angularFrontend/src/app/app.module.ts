@@ -13,7 +13,7 @@ import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { puts } from 'util';
-import { GalleryComponent } from './gallery/gallery.component';
+import { GalleryComponent, GalleryImageDialogComponent } from './gallery/gallery.component';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   method: 'put',
@@ -30,11 +30,13 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     HomeComponent,
     ErrorDialogComponent,
     TaggingDialogComponent,
+    GalleryImageDialogComponent,
     GalleryComponent
   ],
   entryComponents: [
     ErrorDialogComponent,
-    TaggingDialogComponent
+    TaggingDialogComponent,
+    GalleryImageDialogComponent
   ],
   imports: [
     BrowserModule,
