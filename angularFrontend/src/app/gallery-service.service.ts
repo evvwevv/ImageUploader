@@ -3,6 +3,9 @@ import { Observable } from 'rxjs';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import {AuthService} from './auth/auth.service';
 import {GalleryImage} from './galleryImage';
+import {map} from 'rxjs/operators';
+import 'rxjs/add/operator/map'
+
 
 
 @Injectable({
@@ -16,12 +19,18 @@ export class GalleryService {
   constructor(private http: HttpClient,
               private auth: AuthService) { }
 
-  getImages() {
-    this.auth.getData().subscribe(
-      result => {
-        this.makeImagesRequest(result.username);
-      }
-    )
+  getImages(username: string): Observable<GalleryImage[]> {
+    const httpOptions = {
+      params: new HttpParams().set('username', username),
+      headers: new HttpHeaders({'Content-Type': 'application/json'})
+    };
+    return this.http.get(this.getAllImagesUrl, httpOptions).map()
+    /*return this.auth.getData().pipe(
+      map(result => {
+        console.log("getting images...");
+        return this.makeImagesRequest(result.username);
+      })
+    )*/
   }
 
   gatherGalleryImages(resp): GalleryImage[] {
@@ -44,9 +53,14 @@ export class GalleryService {
     };
     this.http.get(this.getAllImagesUrl, httpOptions)
       .subscribe((resp:Response) => {
-        return this.gatherGalleryImages(resp.body);
-      }
+        return this.gatherGalleryImages(resp.body),
+        (error) => {
+          console.log("error at makeImagesRequest");
+          return [];
+        }
+      }     
     );
+    console.log("returning nothing...");
     return [];
   }
 }
