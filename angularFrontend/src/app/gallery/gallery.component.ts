@@ -13,6 +13,36 @@ import {ImageData} from './../imageData'
 
 export interface GalleryImageDialogData {
   galleryImage: GalleryImage;
+  username: string;
+}
+
+export interface DeleteDialogData {
+  galleryImage: GalleryImage;
+  username: string;
+}
+
+@Component({
+  selector: 'app-delete-dialog',
+  templateUrl: 'delete-dialog.html',
+})
+export class DeleteDialogComponent {
+  galleryImage: GalleryImage;
+  username: string;
+  constructor(
+    public dialogRef: MatDialogRef<DeleteDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DeleteDialogData) {
+      this.galleryImage = data.galleryImage;
+      this.username = data.username;
+    }
+
+  confirmDelete(): void {
+    this.dialogRef.close(this.galleryImage);
+  }
+
+  cancelDelete(): void {
+    this.dialogRef.close();
+  }
+
 }
 
 @Component({
@@ -21,6 +51,7 @@ export interface GalleryImageDialogData {
 })
 export class GalleryImageDialogComponent implements OnInit {
   galleryImage: GalleryImage;
+  username: string;
   tempTags: string[];
   visible = true;
   selectable = true;
@@ -30,8 +61,10 @@ export class GalleryImageDialogComponent implements OnInit {
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   constructor(
     public dialogRef: MatDialogRef<GalleryImageDialogComponent>,
+    private galleryService: GalleryService,
     @Inject(MAT_DIALOG_DATA) public data: GalleryImageDialogData) {
       this.galleryImage = data.galleryImage;
+      this.username = data.username;
     }
 
   add(event: MatChipInputEvent): void {
@@ -62,11 +95,14 @@ export class GalleryImageDialogComponent implements OnInit {
   onSaveClick(): void {
     this.galleryImage.tags = [...this.tempTags];
     this.dialogRef.close(this.galleryImage);
-    
   }
 
   onCancelClick(): void {
     this.dialogRef.close();
+  }
+
+  onDeleteClick(): void {
+    this.dialogRef.close(null);
   }
 
 }
@@ -101,14 +137,32 @@ export class GalleryComponent implements OnInit {
     })
   }
 
-  openGalleryImageDialog(galleryImage: GalleryImage): void {
-    const dialogRef = this.dialog.open(GalleryImageDialogComponent, {
+  openDeleteDialog(galleryImage: GalleryImage, username: string) {
+    const dialogRef = this.dialog.open(DeleteDialogComponent, {
       width: '450px',
-      data: {galleryImage: galleryImage}
+      data: {galleryImage: galleryImage, username: this.username}
     });
 
     dialogRef.afterClosed().subscribe((result: GalleryImage) => {
       if(result != null) {
+        this.galleryService.deleteImage(new ImageData(this.username, result.imageName, [])).subscribe();
+        location.reload();
+      }
+    })
+  }
+
+  openGalleryImageDialog(galleryImage: GalleryImage): void {
+    const dialogRef = this.dialog.open(GalleryImageDialogComponent, {
+      width: '450px',
+      data: {galleryImage: galleryImage, username: this.username}
+    });
+
+    dialogRef.afterClosed().subscribe((result: GalleryImage) => {
+      if(result === null) {
+        console.log("delet");
+        this.openDeleteDialog(galleryImage, this.username);
+      }
+      else if(result != null) {
         console.log(this.username);
         this.storeImageService.post(new ImageData(this.username, result.imageName, result.tags)).subscribe();
       }

@@ -1,4 +1,4 @@
-<mat-card class="search-card">
+<!--<mat-card class="search-card">
   <mat-card-content>
     <form class="search-form">
       <mat-form-field class="example-full-width">
@@ -6,7 +6,7 @@
       </mat-form-field>
     </form>
   </mat-card-content>
-</mat-card>
+</mat-card>-->
 <mat-grid-list cols="4" rowHeight="500px">
   <mat-grid-tile *ngFor="let galleryImage of galleryImages$" (click)="openGalleryImageDialog(galleryImage)">
     <img src={{galleryImage.imageUrl}}>

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, throwError as observableThrowError} from 'rxjs';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Response } from '@angular/http';
 import {AuthService} from './auth/auth.service';
 import {GalleryImage} from './galleryImage';
-import {map} from 'rxjs/operators';
-
+import {catchError, map} from 'rxjs/operators';
+import { ImageData } from './imageData'
 
 
 @Injectable({
@@ -14,6 +14,7 @@ import {map} from 'rxjs/operators';
 export class GalleryService {
 
   private getAllImagesUrl = 'https://c2ecjqoud4.execute-api.us-east-1.amazonaws.com/test/getuserimages';
+  private deleteImagesUrl = 'https://c2ecjqoud4.execute-api.us-east-1.amazonaws.com/test/actuallydeleteimage';
   private s3URL = 'https://s3.amazonaws.com/imageuploader-main-bucket/All_User_Images/';
 
   constructor(private http: HttpClient,
@@ -48,6 +49,21 @@ export class GalleryService {
       console.log(dic[key]);
     }
     return galleryImages;
+  }
+
+  deleteImage(imageData: ImageData) {
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    });
+    return this.http
+      .post<ImageData>(this.deleteImagesUrl, imageData)
+      .pipe(catchError(this.handleError));
+  }
+
+  private handleError(res: HttpErrorResponse | any) {
+    console.error(res.error || res.body.error);
+    return observableThrowError(res.error || 'Server error');
   }
             
   /*makeImagesRequest(username: string): GalleryImage[] {
