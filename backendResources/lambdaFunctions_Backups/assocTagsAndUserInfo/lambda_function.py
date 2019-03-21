@@ -128,7 +128,7 @@ def addImageAssociatedData(event, context):
                     curImgDictByImage = json.loads(resultArr[i]['imgDictByImage'])
                  
                     
-                    #newImages is just one image and not a list
+                    #newImage is just one image and not a list
                     if newImage not in curImgDictByImage:
                         newTagsList = list(passedInTags)
                         curImgDictByImage[newImage] = newTagsList
@@ -148,7 +148,7 @@ def addImageAssociatedData(event, context):
                                 
                             #delete tags present in list of tags, but not in newTags
                            
-                            curTagsListCopy = curImgDictByImage[newImages].copy()
+                            curTagsListCopy = curImgDictByImage[newImage].copy()
                                 
                             for t in curTagsListCopy:
                                 if t not in newTags:
