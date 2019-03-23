@@ -44,7 +44,8 @@ export class GalleryService {
     let dic = JSON.parse(resp.body);
     console.log(dic);
     for (var key in dic) {
-      galleryImages.push(new GalleryImage(this.s3URL.concat(key), key, dic[key]));
+      var imageName = key.split('*')[1];
+      galleryImages.push(new GalleryImage(this.s3URL.concat(imageName), imageName, dic[key]));
       console.log(this.s3URL.concat(key));
       console.log(dic[key]);
     }
