@@ -11,7 +11,7 @@
   <mat-grid-tile *ngFor="let galleryImage of galleryImages$" (click)="openGalleryImageDialog(galleryImage)">
     <img src={{galleryImage.imageUrl}}>
     <mat-grid-tile-footer>
-      <h3>{{galleryImage.imageName}}</h3>
+      <h3 style="font-size: 15px; font-family: Roboto, Helvetica Neue, sans-serif">{{galleryImage.imageName}}</h3>
     </mat-grid-tile-footer>
   </mat-grid-tile>
 
