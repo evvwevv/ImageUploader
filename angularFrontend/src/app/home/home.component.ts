@@ -180,10 +180,25 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   onUploadError(args: any) {
     console.log('IMAGE UPLOAD ERROR:', args);
+    this.errorMsg = 'An error occured when uploading the selected image. For more information refer to your browser console.';
+    this.errorTitle = 'Upload Error';
+    this.openErrorDialog();
+  }
+
+  onFileNameError() {
+    this.errorMsg = 'Image names are not allowed to contain the characters * or %, please rename your image and try uploading again.';
+    this.errorTitle = 'Naming Error';
+    this.openErrorDialog();
+  }
+
+  onFileTypeError() {
+    this.errorMsg = 'Currently only images of type .png are supported, please change your image filetype and try uploading again.';
+    this.errorTitle = 'File Type Error';
     this.openErrorDialog();
   }
 
   stripFormData(data) {
+    console.log(data);
     let xhr = data[1];
     let file = data[0];
     var _send = xhr.send;
@@ -200,6 +215,19 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.s3ImageUrl = dropzone.options.url;
     this.resetDropzoneImages();
     this.openTaggingDialog();
+  }
+
+  validateNameandType(data): void {
+    console.log(data);
+    if(data.name.includes('*') || data.name.includes('%')) {
+      this.resetDropzoneImages();
+      this.onFileNameError();
+    }
+    else if(data.type != 'image/png') {
+      this.resetDropzoneImages();
+      this.onFileTypeError();
+    }
+    this.addFile = true;
   }
 
   resetDropzoneImages(): void {

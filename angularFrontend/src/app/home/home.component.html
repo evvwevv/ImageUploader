@@ -1,7 +1,7 @@
 <mat-card>
     <img *ngIf="!loggedIn" mat-card-image src="../assets/bannerphoto.jpg" alt="Photographer Shooting Scene">
     <dropzone [hidden]="!loggedIn" id="dropzoneContainer" class="dropzone-container" [config]="config" [useDropzoneClass]="true" [message]="'Click or drag images here to upload'" 
-      (error)="onUploadError($event)" (success)="onUploadSuccess($event)" (addedFile)="addFile = true" (sending)="stripFormData($event)"></dropzone>
+      (error)="onUploadError($event)" (success)="onUploadSuccess($event)" (addedFile)="validateNameandType($event)" (sending)="stripFormData($event)"></dropzone>
     <button [hidden]="!loggedIn" [disabled]="!addFile" id="submit-button" mat-raised-button color="primary">Upload Image</button>
     <button [hidden]="!loggedIn" [disabled]="!addFile" id="reset-button" (click)="resetDropzoneImages()" mat-raised-button color="accent">Reset Upload Area</button>
     <mat-card-content>
