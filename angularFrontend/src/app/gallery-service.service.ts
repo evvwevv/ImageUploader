@@ -30,12 +30,6 @@ export class GalleryService {
         this.gatherGalleryImages(resp)
       )
     )
-    /*return this.auth.getData().pipe(
-      map(result => {
-        console.log("getting images...");
-        return this.makeImagesRequest(result.username);
-      })
-    )*/
   }
 
   gatherGalleryImages(resp): GalleryImage[] {
@@ -67,21 +61,4 @@ export class GalleryService {
     return observableThrowError(res.error || 'Server error');
   }
             
-  /*makeImagesRequest(username: string): GalleryImage[] {
-    const httpOptions = {
-      params: new HttpParams().set('username', username),
-      headers: new HttpHeaders({'Content-Type': 'application/json'})
-    };
-    this.http.get(this.getAllImagesUrl, httpOptions)
-      .subscribe((resp:Response) => {
-        return this.gatherGalleryImages(resp.body),
-        (error) => {
-          console.log("error at makeImagesRequest");
-          return [];
-        }
-      }     
-    );
-    console.log("returning nothing...");
-    return [];
-  }*/
 }
