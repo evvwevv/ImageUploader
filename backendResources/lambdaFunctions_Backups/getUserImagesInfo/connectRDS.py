@@ -12,7 +12,7 @@ db_name = rds_mysql_config.db_name
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-def get_images_by_user(event, context):
+def get_user_images_info(event, context):
     """
     This function fetches content from mysql RDS instance
     Beginning of lambda function
@@ -54,9 +54,10 @@ def get_images_by_user(event, context):
                         break
                       
                 if body == None:
-                    logger.info("No username found.")
+                    logger.info("Username {} not found.".format(passedInUserName))
+                    status_code = 404
                     body = {
-                        'false' : "No username found."
+                        'false' : "Username {} not found.".format(passedInUserName)
                         }
             
             cur.close()

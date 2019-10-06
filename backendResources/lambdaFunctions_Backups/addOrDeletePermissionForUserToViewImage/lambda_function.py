@@ -34,7 +34,7 @@ def add_or_delete_permission_for_user_to_view_image(event, context):
     try:
         with conn.cursor(pymysql.cursors.DictCursor) as cur:
             
-            passedInUserName = event["body"]["username"]
+            passedInUserName = event["body"]["username"] #owner of image
             passedInImageName = event["body"]["imagename"]
             passedInAction = event["body"]["action"] # can either be "add" or "delete"
             passedInTargetUserToMod = event["body"]["userToAddOrDeletePermission"]
@@ -94,17 +94,19 @@ def add_or_delete_permission_for_user_to_view_image(event, context):
                             
                             if passedInTargetUserToMod in canViewDict[imgToLookUp]:
                                 logger.info("%s already has permission to view %s.", passedInTargetUserToMod, imgToLookUp)
+                                status_code = 400
                                 body = {
-                                    'false': "target user already has permission to view this image."
+                                    'false': "{} already has permission to view this image: {} .".format(passedInTargetUserToMod, imgToLookUp)
                                 }
                                 break
                             else:
                                 canViewDict[imgToLookUp].append(passedInTargetUserToMod)
                                 
                         else:
-                            logger.info("This image doesn't exist (in permissions).")
+                            logger.info("Image, {} , doesn't exist in list of permissions (owner is {}).".format(passedInImageName, passedInUserName))
+                            status_code = 404
                             body = {
-                                'false': "This image doesn't exist (in permissions)."
+                                'false': "Image, {} , doesn't exist in list of permissions (owner is {}).".format(passedInImageName, passedInUserName)
                             }
                             
                             
@@ -113,25 +115,28 @@ def add_or_delete_permission_for_user_to_view_image(event, context):
                         if imgToLookUp in canViewDict:
                             
                             if passedInTargetUserToMod not in canViewDict[imgToLookUp]:
-                                logger.info("%s to be deleted from permissions doesn't exist for image %s.", passedInTargetUserToMod, imgToLookUp)
+                                logger.info("{} already has no permission to view this image: {}.".format(passedInTargetUserToMod, imgToLookUp))
+                                status_code = 404
                                 body = {
-                                    'false': "target user already doesn't exist for this image."
+                                    'false': "{} already has no permission to view this image: {}.".format(passedInTargetUserToMod, imgToLookUp)
                                 }
                                 break
                             else:
                                 canViewDict[imgToLookUp].remove(passedInTargetUserToMod)
                                 
                         else:
-                            logger.info("This image doesn't exist (in permissions).")
+                            logger.info("Image, {} , doesn't exist in list of permissions (owner is {}).".format(passedInImageName, passedInUserName))
+                            status_code = 404
                             body = {
-                                'false': "This image doesn't exist (in permissions)."
+                                'false': "Image, {} , doesn't exist in list of permissions (owner is {}).".format(passedInImageName, passedInUserName)
                             }
                             
                             
                     else:
-                        logger.info("Action string should either be add OR delete")
+                        logger.info("action string-value should either be add OR delete")
+                        status_code = 400
                         body = {
-                            'false': "Action string should either be add OR delete"
+                            'false': "action string-value should either be: \"add\" OR \"delete\""
                         }
                         break
                         
@@ -161,9 +166,10 @@ def add_or_delete_permission_for_user_to_view_image(event, context):
             #if body is still None, that means
             # passed in username is not currently in database
             if body == None:
-                logger.info("Passed in username not found in database.")
+                logger.info("Username (owner) {} not found in database.".format(passedInUserName))
+                status_code = 404
                 body = {
-                    'false': "Passed in username not found in database."
+                    'false': "Username (owner) {} not found in database.".format(passedInUserName)
                 }
                 
             cur.close()

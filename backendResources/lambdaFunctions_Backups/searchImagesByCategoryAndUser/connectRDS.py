@@ -46,7 +46,9 @@ def search_images_by_category_user(event, context):
             
             if not resultArr:
                 status_code = 400
-                body = 'Did not query any data'
+                body = {
+                    "false" : "Did not query any data"
+                    }
             else:
                 for i in range(len(resultArr)):
                     if resultArr[i]['userName'] == passedInUserName:
@@ -56,17 +58,19 @@ def search_images_by_category_user(event, context):
                             body = imgDict[passedInCategory]
                             break
                         else:
-                            logger.info("No such category found for this username.")
+                            logger.info("Category, {} ,not found for username {} ".format(passedInCategory, passedInUserName))
+                            status_code = 404
                             body = {
-                                'false' : "No such category found for this username."
+                                'false' : "Category, {} ,not found for username {} ".format(passedInCategory, passedInUserName)
                             }
                             break
                         
                         
                 if body == None:
-                    logger.info("No username found.")
+                    logger.info("Username, {} , not found.".format(passedInUserName))
+                    status_code = 404
                     body = {
-                        'false' : "No username found."
+                        'false' : "Username, {} , not found.".format(passedInUserName)
                         }
             
             cur.close()
