@@ -11,7 +11,8 @@ db_name = rds_mysql_config.db_name
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
-
+# Given an existing username, returns a dictionary of all images, each image (key)
+# with a list of usernames that are allowed to access their respective images.
 def get_users_who_can_access_image(event, context):
     """
     This function fetches content from mysql RDS instance
@@ -55,9 +56,10 @@ def get_users_who_can_access_image(event, context):
                         break
                         
                 if body == None:
-                    logger.info("No username found.")
+                    logger.info("Username {} not found.".format(passedInUserName))
+                    status_code = 404
                     body = {
-                        'false' : "No username found."
+                        'false' : "Username {} not found.".format(passedInUserName)
                         }
             
             cur.close()

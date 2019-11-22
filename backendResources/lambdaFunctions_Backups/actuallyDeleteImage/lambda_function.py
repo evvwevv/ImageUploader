@@ -38,7 +38,7 @@ def delActualImage(event, context):
             passedInImageName = event["body"]["imagename"]
             hashableUserAndImage = passedInUserName + "*" + passedInImageName
             imageLoc = allUserImagesLocation + hashableUserAndImage
-            imageLoc = imageLoc.replace("@", "%40", 1)
+            imageLoc = imageLoc.replace("@", "%40", 1) # @ character converts to %40 in s3 bucket object url
             
             
             getAllRowsQuery = "select * from User_Account"
@@ -75,6 +75,14 @@ def delActualImage(event, context):
                     
                     if imageToBeDel in oldImages:
                         oldImages.remove(imageToBeDel)
+                    else:
+                        logger.info("%s , who owns image, %s , this image to be deleted doesn't exist.", passedInUserName, passedInImageName)
+                        status_code = 404
+                        body = {
+                            'false': "{} , who owns image, {} , this image to be deleted doesn't exist.".format(passedInUserName, passedInImageName)
+                        }
+                        break
+                        
                         
                     imagesArg = json.dumps(oldImages)
                     
@@ -151,6 +159,7 @@ def delActualImage(event, context):
             # passed in username is not currently in database
             if body == None:
                 logger.info("Passed in username not found in database.")
+                status_code = 404
                 body = {
                     'false': "Passed in username not found in database."
                 }

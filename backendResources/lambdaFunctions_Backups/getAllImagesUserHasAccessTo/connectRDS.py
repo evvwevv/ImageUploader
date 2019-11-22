@@ -47,10 +47,13 @@ def get_all_images_user_can_access(event, context):
             
             if not resultArr:
                 status_code = 400
-                body = 'Did not query any data'
+                body = {
+                    "false" : "Did not query any data"
+                }
             else:
                 for i in range(len(resultArr)):
                     
+                    # exclude images that the username owns; only want list of images user can access
                     if resultArr[i]['userName'] != passedInUserName:
                         canViewDict = json.loads(resultArr[i]["canView"])
                     
