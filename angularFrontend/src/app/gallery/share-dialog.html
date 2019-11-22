@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Share Image</h1>
+<form style="width:100%;" class="share-form" [formGroup]="shareForm" (ngSubmit)="onSubmitShare(shareForm.value)">
+<div mat-dialog-content>
+      <mat-form-field style="width:100%;">
+        <input matInput class="form-control" placeholder="Enter Username to Share with" formControlName="userToShareWith" required>
+        <mat-error *ngIf="shareFormControl.hasError('required')">
+            Input is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button type="submit" mat-raised-button color="primary">Confirm</button>
+  <button mat-raised-button (click)="onCancelClick()">Cancel</button>
+</div>
+</form>
