@@ -5,7 +5,8 @@ import { Response } from '@angular/http';
 import {AuthService} from './auth/auth.service';
 import {GalleryImage} from './galleryImage';
 import {catchError, map} from 'rxjs/operators';
-import { ImageData } from './imageData'
+import { ImageData } from './imageData';
+import {SharedImage} from './sharedImage';
 
 
 @Injectable({
@@ -13,9 +14,10 @@ import { ImageData } from './imageData'
 })
 export class GalleryService {
 
-  private getAllImagesUrl = 'https://c2ecjqoud4.execute-api.us-east-1.amazonaws.com/test/getuserimages';
+  private getUploadedImagesUrl = 'https://c2ecjqoud4.execute-api.us-east-1.amazonaws.com/test/getuserimages';
   private deleteImagesUrl = 'https://c2ecjqoud4.execute-api.us-east-1.amazonaws.com/test/actuallydeleteimage';
   private s3URL = 'https://s3.amazonaws.com/imageuploader-main-bucket/All_User_Images/';
+  private getSharedImagesUrl = 'https://c2ecjqoud4.execute-api.us-east-1.amazonaws.com/test/getallimagesuserhasaccessto';
 
   constructor(private http: HttpClient,
               private auth: AuthService) { }
@@ -25,11 +27,35 @@ export class GalleryService {
       params: new HttpParams().set('username', username),
       headers: new HttpHeaders({'Content-Type': 'application/json'})
     };
-    return this.http.get(this.getAllImagesUrl, httpOptions).pipe(
+    return this.http.get(this.getUploadedImagesUrl, httpOptions).pipe(
       map((resp: Response) =>  
         this.gatherGalleryImages(resp, category)
       )
     )
+  }
+
+  getSharedImages(username: string): Observable<any> {
+    const httpOptions = {
+      params: new HttpParams().set('username', username),
+      headers: new HttpHeaders({'Content-Type': 'application/json'})
+    };
+    return this.http.get(this.getSharedImagesUrl, httpOptions).pipe(
+      map((resp: Response) =>
+        this.gatherSharedImages(resp)
+      )
+    )
+  }
+
+  gatherSharedImages(resp): SharedImage[] {
+    let sharedImages: SharedImage[] = [];
+    console.log(resp);
+    let list = JSON.parse(resp.body);
+    for (var i = 0; i < list.length; i++) {
+      var originalOwner = list[i].split('*')[0];
+      var imageName = list[i].split('*')[1];
+      sharedImages.push(new SharedImage(this.s3URL.concat(imageName), imageName, originalOwner));
+    }
+    return sharedImages;
   }
 
   private includesCategory(catList: string[], category: string): boolean {
@@ -43,9 +69,7 @@ export class GalleryService {
 
   gatherGalleryImages(resp, category: string): GalleryImage[] {
     let galleryImages: GalleryImage[] = [];
-    console.log(resp);
     let dic = JSON.parse(resp.body);
-    console.log(dic);
     if(category) {
       for (var key in dic) {
         if(this.includesCategory(dic[key], category)) {
@@ -58,8 +82,6 @@ export class GalleryService {
       for (var key in dic) {
         var imageName = key.split('*')[1];
         galleryImages.push(new GalleryImage(this.s3URL.concat(imageName), imageName, dic[key]));
-        console.log(this.s3URL.concat(key));
-        console.log(dic[key]);
       }
     }
     return galleryImages;

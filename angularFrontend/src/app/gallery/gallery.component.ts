@@ -15,6 +15,7 @@ import { integer } from 'aws-sdk/clients/cloudfront';
 import {ErrorDialogComponent} from '../home/home.component';
 import {FormControl, FormGroupDirective, NgForm, Validators, FormBuilder, FormGroup} from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
+import { SharedImage } from '../sharedImage';
 
 export interface GalleryImageDialogData {
   galleryImage: GalleryImage;
@@ -206,6 +207,7 @@ export class GalleryComponent implements OnInit {
   imageToShow: any;
   isImageLoading = false;
   galleryImages$: Observable<[GalleryImage]>;
+  sharedImages$: Observable<[SharedImage]>;
   tempImages: GalleryImage[];
   username: string;
   temp: string;
@@ -218,6 +220,7 @@ export class GalleryComponent implements OnInit {
 
   ngOnInit() {
     this.updateImageGallery('');
+    this.updateSharedImageGallery();
     this.setColNum();
   }
 
@@ -231,6 +234,18 @@ export class GalleryComponent implements OnInit {
     else {
       this.breakpoint = 4;
     }
+  }
+
+  updateSharedImageGallery(): boolean {
+    this.auth.getData().subscribe(result => {
+      this.username = result.username;
+      this.galleryService.getSharedImages(result.username).subscribe((result: Observable<[SharedImage]>) => {
+        this.sharedImages$ = result;
+        console.log(this.sharedImages$);
+        return true;
+      })
+    })
+    return false;
   }
 
   updateImageGallery(category: string): boolean {

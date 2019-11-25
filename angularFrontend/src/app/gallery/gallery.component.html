@@ -15,6 +15,18 @@
       </mat-grid-tile>
     </mat-grid-list>
   </mat-tab>
-  <mat-tab label="Images Shared with You"></mat-tab>
+  <mat-tab label="Images Shared with You">
+    <mat-grid-list [cols]="breakpoint" (window:resize)="setColNum()">
+      <mat-grid-tile *ngFor="let sharedImage of sharedImages$">
+        <mat-card>
+          <mat-card-header></mat-card-header>
+          <img mat-card-image class="image" src={{sharedImage.imageUrl}}>
+          <mat-card-footer>
+            <h3 class="imageTitle">{{sharedImage.imageName}}</h3>
+          </mat-card-footer>
+        </mat-card>
+      </mat-grid-tile>    
+    </mat-grid-list>
+  </mat-tab>
 </mat-tab-group>
 
