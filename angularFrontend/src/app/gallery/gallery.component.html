@@ -1,4 +1,4 @@
-<mat-tab-group mat-stretch-tabs>
+<mat-tab-group mat-stretch-tabs (selectedTabChange)="tabClick($event)">
   <mat-tab label="Your Images">
     <mat-form-field appearance="outline" class="search-form">
         <input class="search-input" id="searchBar" matInput type="search" placeholder="Search for Photos by Category" (keyup.enter)="searchForCategory($event)">

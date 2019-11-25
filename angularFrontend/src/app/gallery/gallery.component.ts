@@ -236,6 +236,13 @@ export class GalleryComponent implements OnInit {
     }
   }
 
+  tabClick(tab) {
+    console.log(tab.index);
+    if(tab.index === 1) {
+      this.updateSharedImageGallery();
+    }
+  }
+
   updateSharedImageGallery(): boolean {
     this.auth.getData().subscribe(result => {
       this.username = result.username;
