@@ -16,7 +16,6 @@ export class GalleryService {
   private getAllImagesUrl = 'https://c2ecjqoud4.execute-api.us-east-1.amazonaws.com/test/getuserimages';
   private deleteImagesUrl = 'https://c2ecjqoud4.execute-api.us-east-1.amazonaws.com/test/actuallydeleteimage';
   private s3URL = 'https://s3.amazonaws.com/imageuploader-main-bucket/All_User_Images/';
-  private categorySearchUrl = 'https://c2ecjqoud4.execute-api.us-east-1.amazonaws.com/test/searchimagebycategoryanduser'
 
   constructor(private http: HttpClient,
               private auth: AuthService) { }

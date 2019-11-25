@@ -10,6 +10,7 @@ import { MatDialogModule } from '@angular/material';
 import { MatChipsModule } from '@angular/material/chips';
 import {MatGridListModule} from '@angular/material/grid-list'; 
 import {MatTabsModule} from '@angular/material/tabs';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 @NgModule({
     imports: [
@@ -24,7 +25,8 @@ import {MatTabsModule} from '@angular/material/tabs';
         MatDialogModule,
         MatChipsModule,
         MatGridListModule,
-        MatTabsModule
+        MatTabsModule,
+        MatSnackBarModule
     ],
     exports: [
         MatToolbarModule,
@@ -38,7 +40,8 @@ import {MatTabsModule} from '@angular/material/tabs';
         MatDialogModule,
         MatChipsModule,
         MatGridListModule,
-        MatTabsModule
+        MatTabsModule,
+        MatSnackBarModule
     ]
 })
 export class SharedModule {}

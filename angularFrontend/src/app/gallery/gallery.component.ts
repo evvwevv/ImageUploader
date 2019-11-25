@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import {GalleryService} from './../gallery-service.service';
 import {GalleryImage} from './../galleryImage'; 
 import { stringType } from 'aws-sdk/clients/iam';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { MatChipInputEvent } from '@angular/material';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {Injectable, Inject} from '@angular/core';
@@ -79,6 +79,7 @@ export class ShareDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<ShareDialogComponent>,
     private storeImageService: StoreImageService,
     private fb: FormBuilder,
+    private _snackbar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public data: ShareDialogData) {
       this.galleryImage = data.galleryImage;
       this.username = data.username;
@@ -98,6 +99,12 @@ export class ShareDialogComponent implements OnInit {
     });
   }
 
+  openSnackBar() {
+    this._snackbar.open("Image Successfully Shared", "Dismiss", {
+      duration: 2000,
+    });
+  }
+
   onSubmitShare(value: any) {
     if(value.userToShareWith) {
       console.log(value);
@@ -107,6 +114,7 @@ export class ShareDialogComponent implements OnInit {
         this.galleryImage.imageName, action, userToShareWith)).subscribe((result => {
           console.log(result);
           this.dialogRef.close(this.galleryImage);
+          this.openSnackBar()
         }))
     }
   }
