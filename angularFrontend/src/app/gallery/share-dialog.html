@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>Image Sharing</h1>
 <form style="width:100%;" [formGroup]="shareForm">
-<div mat-dialog-content>
+<div mat-dialog-content style="overflow-x: hidden;">
       <mat-form-field style="width:100%;">
         <mat-chip-list #chipList>
           <mat-chip *ngFor="let user of sharedUsers" [selectable]="selectable"
