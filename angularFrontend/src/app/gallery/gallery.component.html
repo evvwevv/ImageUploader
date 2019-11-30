@@ -18,7 +18,7 @@
   <mat-tab label="Images Shared with You">
     <mat-grid-list [cols]="breakpoint" (window:resize)="setColNum()">
       <mat-grid-tile *ngFor="let sharedImage of sharedImages$">
-        <mat-card>
+        <mat-card (click)="openSharedImageDialog(sharedImage)">
           <mat-card-header></mat-card-header>
           <img mat-card-image class="image" src={{sharedImage.imageUrl}}>
           <mat-card-footer>

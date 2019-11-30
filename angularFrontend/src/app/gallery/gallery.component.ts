@@ -32,6 +32,10 @@ export interface ShareDialogData {
   username: string;
 }
 
+export interface SharedImageDialogData {
+  sharedImage: SharedImage;
+}
+
 @Component({
   selector: 'app-delete-dialog',
   templateUrl: 'delete-dialog.html',
@@ -61,6 +65,30 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     const isSubmitted = form && form.submitted;
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
+}
+
+@Component({
+  selector: 'app-sharedImage-dialog',
+  templateUrl: 'sharedImage-dialog.html',
+})
+
+export class SharedImageDialogComponent implements OnInit {
+  sharedImage: SharedImage;
+  constructor(
+    public dialogRef: MatDialogRef<SharedImageDialogComponent>,
+    public dialog: MatDialog,
+    @Inject(MAT_DIALOG_DATA) public data: SharedImageDialogData) {
+      this.sharedImage = data.sharedImage;
+    }
+
+    ngOnInit() {
+      document.getElementById('fileimage').setAttribute('src', this.sharedImage.imageUrl);
+    }
+
+    onCloseClick() {
+      this.dialogRef.close();
+    }
+
 }
 
 @Component({
@@ -326,6 +354,13 @@ export class GalleryComponent implements OnInit {
         console.log(this.username);
         this.storeImageService.post(new ImageData(this.username, result.imageName, result.tags)).subscribe();
       }
+    });
+  }
+
+  openSharedImageDialog(sharedImage: SharedImage): void {
+    const dialogRef = this.dialog.open(SharedImageDialogComponent, {
+      width: '450px',
+      data: {sharedImage: sharedImage}
     });
   }
 
