@@ -100,6 +100,11 @@ export class ShareDialogComponent implements OnInit {
   public shareForm: FormGroup;
   username: string;
   userToShareWith: string;
+  selectable = true;
+  removable = true;
+  addOnBlur = true;
+  sharedUsers: string[];
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   shareFormControl = new FormControl('', [
     Validators.required
   ]);
@@ -112,7 +117,28 @@ export class ShareDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: ShareDialogData) {
       this.galleryImage = data.galleryImage;
       this.username = data.username;
+      this.sharedUsers = this.galleryImage.sharedUsers;
     }
+
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+
+    if ((value || '').trim()) {
+      this.sharedUsers.push(value.trim());
+    }
+
+    if (input) {
+      input.value = '';
+    }
+  }
+  remove(user: string): void {
+    const index = this.sharedUsers.indexOf(user);
+    if (index >= 0) {
+      //add remove functionality here!
+      this.sharedUsers.splice(index, 1);
+    }
+  }
   
   onCancelClick(): void {
     this.dialogRef.close(this.galleryImage);
@@ -158,7 +184,6 @@ export class GalleryImageDialogComponent implements OnInit {
   galleryImage: GalleryImage;
   username: string;
   tempTags: string[];
-  visible = true;
   selectable = true;
   removable = true;
   addOnBlur = true;
@@ -176,9 +201,9 @@ export class GalleryImageDialogComponent implements OnInit {
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
-    this.hasNotModifiedTags = false;
 
     if ((value || '').trim()) {
+      this.hasNotModifiedTags = false;
       this.tempTags.push(value.trim());
     }
 

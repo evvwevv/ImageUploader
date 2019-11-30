@@ -2,10 +2,18 @@
 <form style="width:100%;" class="share-form" [formGroup]="shareForm" (ngSubmit)="onSubmitShare(shareForm.value)">
 <div mat-dialog-content>
       <mat-form-field style="width:100%;">
-        <input matInput class="form-control" placeholder="Enter Username to Share with" formControlName="userToShareWith" required>
-        <mat-error *ngIf="shareFormControl.hasError('required')">
-            Input is <strong>required</strong>
-        </mat-error>
+        <mat-chip-list #chipList>
+          <mat-chip *ngFor="let user of sharedUsers" [selectable]="selectable"
+              [removable]="removable" (removed)="remove(user)">
+              {{user}}
+              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+          </mat-chip>
+          <input placeholder="Add and remove users to share your image with"
+              [matChipInputFor]="chipList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              [matChipInputAddOnBlur]="addOnBlur"
+              (matChipInputTokenEnd)="add($event)">
+        </mat-chip-list>
       </mat-form-field>
 </div>
 <div mat-dialog-actions>
