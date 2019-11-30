@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
 import {AuthService} from './../auth/auth.service';
 import {StoreImageService} from './../store-image.service';
 import { Observable } from 'rxjs';
@@ -60,13 +60,6 @@ export class DeleteDialogComponent {
 
 }
 
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
-}
-
 @Component({
   selector: 'app-sharedImage-dialog',
   templateUrl: 'sharedImage-dialog.html',
@@ -104,72 +97,85 @@ export class ShareDialogComponent implements OnInit {
   removable = true;
   addOnBlur = true;
   sharedUsers: string[];
+
+  @ViewChild('chipList') chipList;
+
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
-  shareFormControl = new FormControl('', [
-    Validators.required
-  ]);
-  matcher = new MyErrorStateMatcher();
   constructor(
     public dialogRef: MatDialogRef<ShareDialogComponent>,
     private storeImageService: StoreImageService,
-    private fb: FormBuilder,
     private _snackbar: MatSnackBar,
+    private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: ShareDialogData) {
       this.galleryImage = data.galleryImage;
       this.username = data.username;
       this.sharedUsers = this.galleryImage.sharedUsers;
     }
 
+  ngOnInit() {
+    this.shareForm = this.fb.group({
+      user: new FormControl('', Validators.email)
+    });
+  }
+
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
 
     if ((value || '').trim()) {
-      this.sharedUsers.push(value.trim());
+      if(this.shareForm.controls.user.valid) {
+        this.sharedUsers.push(value.trim());
+        this.shareForm.controls.user.markAsDirty();
+        this.changeUserPermissions(value.trim(), "add");
+        this.chipList.errorState = false;
+      }
+      else {
+        this.chipList.errorState = true;
+        const index = this.sharedUsers.indexOf(value.trim());
+        if(index >= 0) {
+          this.sharedUsers.splice(index, 1);
+        }
+      }
     }
-
-    if (input) {
-      input.value = '';
+    else {
+      this.shareForm.controls.user.updateValueAndValidity();
     }
+    input.value = '';
   }
   remove(user: string): void {
     const index = this.sharedUsers.indexOf(user);
     if (index >= 0) {
-      //add remove functionality here!
+      this.changeUserPermissions(this.sharedUsers[index], "delete");
       this.sharedUsers.splice(index, 1);
     }
   }
   
-  onCancelClick(): void {
+  onDoneClick(): void {
     this.dialogRef.close(this.galleryImage);
   }
 
-  ngOnInit() {
-    this.initForm();
+  openSnackBar(action: string) {
+    if(action === "add") {
+      this._snackbar.open("Image Successfully Shared", "Dismiss", {
+        duration: 2000,
+      });
+    }
+    else if("delete") {
+      this._snackbar.open("Permissions Successfully Revoked", "Dismiss", {
+        duration: 2000,
+      });
+    }
+
   }
 
-  initForm() {
-    this.shareForm = this.fb.group({
-      userToShareWith: ['', Validators.required]
-    });
-  }
-
-  openSnackBar() {
-    this._snackbar.open("Image Successfully Shared", "Dismiss", {
-      duration: 2000,
-    });
-  }
-
-  onSubmitShare(value: any) {
-    if(value.userToShareWith) {
+  changeUserPermissions(value: string, action: string) {
+    if(value) {
       console.log(value);
-      const action = "add"
-      const userToShareWith = value.userToShareWith;
+      const userToShareWith = value;
       this.storeImageService.shareWithUser(new SharingImageData(this.username, 
         this.galleryImage.imageName, action, userToShareWith)).subscribe((result => {
           console.log(result);
-          this.dialogRef.close(this.galleryImage);
-          this.openSnackBar()
+          this.openSnackBar(action);
         }))
     }
   }

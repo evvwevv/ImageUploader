@@ -38,7 +38,7 @@ export class GalleryService {
 
     let o2: Observable<any> = this.http.get(this.getSharedUsersUrl, httpOptions).pipe(
       map((resp: Response) => 
-        this.gatherSharedUsers(resp)
+        this.gatherSharedUsers(resp, username)
       )
     )
 
@@ -46,15 +46,10 @@ export class GalleryService {
   }
 
   combineSharedUserData(resp) {
-    console.log(resp[0]);
-    console.log(resp[1]);
     let combinedGalleryImages: GalleryImage[] = [];
     for(var i = 0; i < resp[0].length; i++) {
       for(var j = 0; j < resp[1].length; j++) {
-        console.log(resp[0][i].imageName);
-        console.log(resp[1][j].imageName);
         if(resp[0][i].imageName === resp[1][j].imageName) {
-          console.log("found one");
           combinedGalleryImages.push(new GalleryImage(resp[0][i].imageUrl, resp[0][i].imageName, resp[0][i].tags, resp[1][j].users))
         }
       }
@@ -62,15 +57,25 @@ export class GalleryService {
     return combinedGalleryImages;
   }
 
-  gatherSharedUsers(resp): SharedUserData[] {
+  gatherSharedUsers(resp, username: string): SharedUserData[] {
     let sharedUsers: SharedUserData[] = [];
     let dic = JSON.parse(resp.body);
     for(var key in dic) {
       var imageName = key.split('*')[1];
-      sharedUsers.push(new SharedUserData(imageName, dic[key]));
+      let ownerRemovedUserList = this.removeOwner(dic[key], username);
+      sharedUsers.push(new SharedUserData(imageName, ownerRemovedUserList));
     }
     return sharedUsers;
   }
+
+  private removeOwner(userList: string[], username: string): string[] {
+    const index = userList.indexOf(username);
+    if(index >= 0) {
+      userList.splice(index, 1);
+    }
+    return userList;
+  }
+
 
   getSharedImages(username: string): Observable<any> {
     const httpOptions = {
