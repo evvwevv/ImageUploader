@@ -234,7 +234,7 @@ export class GalleryComponent implements OnInit {
 
   imageToShow: any;
   isImageLoading = false;
-  galleryImages$: Observable<[GalleryImage]>;
+  galleryImages: GalleryImage[];
   sharedImages$: Observable<[SharedImage]>;
   tempImages: GalleryImage[];
   username: string;
@@ -286,8 +286,9 @@ export class GalleryComponent implements OnInit {
   updateImageGallery(category: string): boolean {
     this.auth.getData().subscribe(result => {
       this.username = result.username;
-      this.galleryService.getImages(result.username, category).subscribe((result: Observable<[GalleryImage]>) => {
-        this.galleryImages$ = result;
+      this.galleryService.getImages(result.username, category).subscribe((result: Observable<any>) => {
+        console.log(result);
+        this.galleryImages = this.galleryService.combineSharedUserData(result);
         if(category) {
           if(!result[0]) {
             this.openErrorDialog("There were no images found associated with that category", "No Results");
@@ -295,7 +296,7 @@ export class GalleryComponent implements OnInit {
             return false;
           }
         }
-        this.temp = JSON.parse(JSON.stringify(result[0].imageUrl));
+
         return true;
       });
     })
@@ -332,7 +333,6 @@ export class GalleryComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: GalleryImage) => {
       if(result != null) {
         this.galleryService.deleteImage(new ImageData(this.username, result.imageName, [])).subscribe((result => {
-          console.log(this.galleryImages$);
           this.updateImageGallery('');
         }));
       }
