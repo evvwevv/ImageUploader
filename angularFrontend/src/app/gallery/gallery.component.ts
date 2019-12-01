@@ -187,11 +187,9 @@ export class ShareDialogComponent implements OnInit {
 
   changeUserPermissions(value: string, action: string) {
     if(value) {
-      console.log(value);
       const userToShareWith = value;
       this.storeImageService.shareWithUser(new SharingImageData(this.username, 
         this.galleryImage.imageName, action, userToShareWith)).subscribe((result => {
-          console.log(result);
           this.openSnackBar(action);
         }))
     }
@@ -313,7 +311,6 @@ export class GalleryComponent implements OnInit {
   }
 
   tabClick(tab) {
-    console.log(tab.index);
     if(tab.index === 1) {
       this.updateSharedImageGallery();
     }
@@ -324,7 +321,6 @@ export class GalleryComponent implements OnInit {
       this.username = result.username;
       this.galleryService.getSharedImages(result.username).subscribe((result: Observable<[SharedImage]>) => {
         this.sharedImages$ = result;
-        console.log(this.sharedImages$);
         return true;
       })
     })
@@ -335,7 +331,6 @@ export class GalleryComponent implements OnInit {
     this.auth.getData().subscribe(result => {
       this.username = result.username;
       this.galleryService.getImages(result.username, category).subscribe((result: Observable<any>) => {
-        console.log(result);
         this.galleryImages = this.galleryService.combineSharedUserData(result);
         if(category) {
           if(!result[0][0]) {
@@ -395,11 +390,9 @@ export class GalleryComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: GalleryImage) => {
       if(result === null) {
-        console.log("delet");
         this.openDeleteDialog(galleryImage, this.username);
       }
       else if(result != null) {
-        console.log(this.username);
         this.storeImageService.post(new ImageData(this.username, result.imageName, result.tags)).subscribe();
       }
     });

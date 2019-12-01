@@ -32,7 +32,6 @@ export class StoreImageService {
   }
 
   shareWithUser(imageData: SharingImageData) {
-    console.log(imageData.userToAddOrDeletePermission);
     const headers = new Headers({
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*'

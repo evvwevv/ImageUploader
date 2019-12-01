@@ -9,7 +9,6 @@ import { ImageData } from './imageData';
 import {SharedImage} from './sharedImage';
 import {SharedUserData} from './sharedUserData';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -29,7 +28,6 @@ export class GalleryService {
       params: new HttpParams().set('username', username),
       headers: new HttpHeaders({'Content-Type': 'application/json'})
     };
-    console.log('getting images');
     let o1: Observable<any> = this.http.get(this.getUploadedImagesUrl, httpOptions).pipe(
       map((resp: Response) =>
         this.gatherGalleryImages(resp, category)
@@ -91,7 +89,6 @@ export class GalleryService {
 
   gatherSharedImages(resp): SharedImage[] {
     let sharedImages: SharedImage[] = [];
-    console.log(resp);
     let list = JSON.parse(resp.body);
     for (var i = 0; i < list.length; i++) {
       var originalOwner = list[i].split('*')[0];
