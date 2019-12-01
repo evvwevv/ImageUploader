@@ -321,7 +321,8 @@ export class GalleryComponent implements OnInit {
         console.log(result);
         this.galleryImages = this.galleryService.combineSharedUserData(result);
         if(category) {
-          if(!result[0]) {
+          if(!result[0][0]) {
+            console.log("no res");
             this.openErrorDialog("There were no images found associated with that category", "No Results");
             this.updateImageGallery('');
             return false;
