@@ -106,6 +106,7 @@ export class ShareDialogComponent implements OnInit {
     private storeImageService: StoreImageService,
     private _snackbar: MatSnackBar,
     private fb: FormBuilder,
+    public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: ShareDialogData) {
       this.galleryImage = data.galleryImage;
       this.username = data.username;
@@ -118,16 +119,32 @@ export class ShareDialogComponent implements OnInit {
     });
   }
 
+  openErrorDialog(errorMsg: string, errorTitle: string): void {
+    this.dialog.open(ErrorDialogComponent, {
+      width: '450px',
+      autoFocus: true,
+      data: {errorMsg: errorMsg, errorTitle: errorTitle}
+    });
+  }
+
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
 
     if ((value || '').trim()) {
       if(this.shareForm.controls.user.valid) {
-        this.sharedUsers.push(value.trim());
-        this.shareForm.controls.user.markAsDirty();
-        this.changeUserPermissions(value.trim(), "add");
-        this.chipList.errorState = false;
+        if(value.trim() === this.username) {
+          this.openErrorDialog("You can't share an image with yourself", "Sharing Error");
+        }
+        else if(this.sharedUsers.indexOf(value.trim()) >= 0) {
+          this.openErrorDialog("This image is already shared with " + value.trim(), "Sharing Error");
+        }
+        else {
+          this.sharedUsers.push(value.trim());
+          this.shareForm.controls.user.markAsDirty();
+          this.changeUserPermissions(value.trim(), "add");
+          this.chipList.errorState = false;
+        }
       }
       else {
         this.chipList.errorState = true;
@@ -322,7 +339,6 @@ export class GalleryComponent implements OnInit {
         this.galleryImages = this.galleryService.combineSharedUserData(result);
         if(category) {
           if(!result[0][0]) {
-            console.log("no res");
             this.openErrorDialog("There were no images found associated with that category", "No Results");
             this.updateImageGallery('');
             return false;
