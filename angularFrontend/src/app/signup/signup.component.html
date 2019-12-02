@@ -12,7 +12,6 @@
         </mat-error>
       </mat-form-field>
       <mat-form-field>
-        <!--still needs validation on password being same as repeat-->
         <input matInput placeholder="Enter a password (must be at least 8 characters with at least one number)" [type]="hide ? 'password' : 'text'"
                formControlName="password" [errorStateMatcher]="passwordMatcher" required>
         <mat-error *ngIf="requiredFormControl.hasError('required')">Password is <strong>required</strong></mat-error>  
