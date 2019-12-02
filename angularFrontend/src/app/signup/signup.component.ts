@@ -69,7 +69,6 @@ export class SignupComponent implements OnInit {
   }
 
   initForm() {
-    //probably needs different form controls
     this.signupForm = this.fb.group({
       email: this.emailFormControl,
       password: this.requiredFormControl,

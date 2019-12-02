@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {AuthService} from './../auth/auth.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import {ErrorDialogComponent} from '../home/home.component';
+import { EmailErrorStateMatcher } from '../signup/signup.component';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,12 @@ import {ErrorDialogComponent} from '../home/home.component';
 export class LoginComponent implements OnInit {
   public loginForm: FormGroup;
   hide = true;
-  email = new FormControl('', [Validators.required, Validators.email]);
+  emailFormControl = new FormControl('', [
+    Validators.required,
+    Validators.email,
+  ]);
+  requiredFormControl = new FormControl('', [Validators.required]);
+  emailMatcher = new EmailErrorStateMatcher();
   errorDialogRef: MatDialogRef<ErrorDialogComponent>;
   errorTitle = 'Sign in Error';
   errorMsg = 'We were unable to sign you in, please make sure your email and password are correct.';
@@ -38,8 +44,8 @@ export class LoginComponent implements OnInit {
 
   initForm() {
     this.loginForm = this.fb.group({
-      email: ['', Validators.required],
-      password: ['', Validators.required]
+      email: this.emailFormControl,
+      password: this.requiredFormControl
     });
   }
 
@@ -55,12 +61,6 @@ export class LoginComponent implements OnInit {
         console.log(error);
       }
     );
-  }
-
-  getErrorMessage() {
-    return this.email.hasError('required') ? 'You must enter a value' :
-      this.email.hasError('email') ? 'Not a valid email' :
-        '';
   }
 
 }
