@@ -1,9 +1,27 @@
 import {Component, OnInit, Inject} from '@angular/core';
-import {FormBuilder, FormGroup, FormControl, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AuthService} from './../auth/auth.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import {ErrorDialogComponent} from '../home/home.component';
+import {ErrorStateMatcher} from '@angular/material/core';
+
+export class EmailErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    const invalidCtrl = !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+    return invalidCtrl;
+  }
+}
+
+export class PasswordErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const invalidCtrl = !!(control && control.invalid && control.parent.dirty);
+    const invalidParent = !!(control && control.parent && control.parent.invalid && control.parent.dirty);
+
+    return (invalidCtrl || invalidParent);
+  }
+}
 
 @Component({
   selector: 'app-signup',
@@ -14,9 +32,15 @@ export class SignupComponent implements OnInit {
   public signupForm: FormGroup;
   public confirmationForm: FormGroup;
   public successfullySignup: boolean;
-
   hide = true;
-  email = new FormControl('', [Validators.required, Validators.email]);
+  emailFormControl = new FormControl('', [
+    Validators.required,
+    Validators.email,
+  ]);
+  requiredFormControl = new FormControl('', [Validators.required]);
+  requiredConfirmFormControl = new FormControl('', [Validators.required]);
+  emailMatcher = new EmailErrorStateMatcher();
+  passwordMatcher = new PasswordErrorStateMatcher();
   errorDialogRef: MatDialogRef<ErrorDialogComponent>;
   confirmErrorTitle = 'Account Confirmation Error';
   confirmErrorMsg = 'We were unable to confirm your account, please double check \
@@ -45,14 +69,23 @@ export class SignupComponent implements OnInit {
   }
 
   initForm() {
+    //probably needs different form controls
     this.signupForm = this.fb.group({
-      email: ['', Validators.required],
-      password: ['', Validators.required]
-    });
+      email: this.emailFormControl,
+      password: this.requiredFormControl,
+      confirmPassword: ['']
+    }, {validator: this.checkPasswords });
     this.confirmationForm = this.fb.group({
-      email: ['', Validators.required],
-      confirmationCode: ['', Validators.required]
+      email: this.emailFormControl,
+      confirmationCode: this.requiredConfirmFormControl
     });
+  }
+
+  checkPasswords(group: FormGroup) {
+    let pass = group.get('password').value;
+    let confirmPass = group.get('confirmPassword').value;
+
+    return pass === confirmPass ? null : { notSame: true }     
   }
 
   onSubmitSignup(value: any) {
@@ -63,7 +96,10 @@ export class SignupComponent implements OnInit {
         this.successfullySignup = true;
       },
       error => {
-        if (error.code === 'InvalidParameterException') {
+        if(error.code === 'UsernameExistsException') {
+          this.openErrorDialog('It appears that an account associated with this email already exists.', this.createErrorTitle);
+        }
+        else if (error.code) {
           this.openErrorDialog(this.createErrorMsg, this.createErrorTitle);
         }
         console.log(error);
@@ -93,9 +129,4 @@ export class SignupComponent implements OnInit {
     );
   }
 
-  getErrorMessage() {
-    return this.email.hasError('required') ? 'You must enter a value' :
-      this.email.hasError('email') ? 'Not a valid email' :
-        '';
-  }
 }
