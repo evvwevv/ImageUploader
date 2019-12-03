@@ -3,34 +3,49 @@
     <form class="signup-form" *ngIf="!successfullySignup" [formGroup]="signupForm"
           (ngSubmit)="onSubmitSignup(signupForm.value)">
       <mat-form-field>
-        <input matInput class="form-control" placeholder="Enter your email" formControlName="email" required>
-        <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
+        <input matInput placeholder="Enter your email" [formControl]="emailFormControl" [errorStateMatcher]="emailMatcher" required>
+        <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+          Please enter a valid email address
+        </mat-error>
+        <mat-error *ngIf="emailFormControl.hasError('required')">
+          Email is <strong>required</strong>
+        </mat-error>
       </mat-form-field>
       <mat-form-field>
-        <input matInput class="form-control" placeholder="Enter a password (must be at least 8 characters with at least one number)" [type]="hide ? 'password' : 'text'"
-               formControlName="password" required>
+        <input matInput placeholder="Enter a password (must be at least 8 characters with at least one number)" [type]="hide ? 'password' : 'text'"
+               formControlName="password" [errorStateMatcher]="passwordMatcher" required>
+        <mat-error *ngIf="requiredFormControl.hasError('required')">Password is <strong>required</strong></mat-error>  
         <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
       </mat-form-field>
       <mat-form-field>
-        <input matInput placeholder="Reenter your password" [type]="hide ? 'password' : 'text'" required>
+        <input matInput placeholder="Reenter your password" [type]="hide ? 'password' : 'text'" formControlName="confirmPassword" [errorStateMatcher]="passwordMatcher" required>
+        <mat-error *ngIf="signupForm.hasError('notSame')">
+          Passwords do not match
+        </mat-error>    
         <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
       </mat-form-field>
-      <button type="submit" mat-raised-button color="primary">Create an Account</button>
+      <button type="submit" mat-raised-button color="primary" [disabled]="!signupForm.valid">Create an Account</button>
     </form>
-    <button class="confirm-button" (click)="successfullySignup = true" *ngIf="!successfullySignup" mat-flat-button
+    <button class="confirm-button" (click)="successfullySignup = true" *ngIf="!successfullySignup" mat-raised-button
             color="accent">Input Confirmation Code
     </button>
     <form class="signup-form" *ngIf="successfullySignup" [formGroup]="confirmationForm"
           (ngSubmit)="onSubmitConfirmation(confirmationForm.value)">
       <mat-form-field>
-        <input matInput class="form-control" placeholder="Enter your email" formControlName="email" required>
-        <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
+        <input matInput placeholder="Enter your email" [formControl]="emailFormControl" [errorStateMatcher]="emailMatcher" required>
+        <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+          Please enter a valid email address
+        </mat-error>
+        <mat-error *ngIf="emailFormControl.hasError('required')">
+          Email is <strong>required</strong>
+        </mat-error>
       </mat-form-field>
       <mat-form-field>
-        <input matInput class="form-control" placeholder="Enter confirmation code" formControlName="confirmationCode"
+        <input matInput placeholder="Enter confirmation code" [formControl]="requiredConfirmFormControl" [errorStateMatcher]="emailMatcher"
                required>
+        <mat-error *ngIf="requiredFormControl.hasError('required')">Confirmation Code is <strong>required</strong></mat-error>
       </mat-form-field>
-      <button type="submit" mat-raised-button color="primary">Confirm Account</button>
+      <button type="submit" mat-raised-button color="primary" [disabled]="!confirmationForm.valid">Confirm Account</button>
     </form>
     <button class="back-button" (click)="successfullySignup = false" *ngIf="successfullySignup" mat-raised-button
             color="accent">Go Back

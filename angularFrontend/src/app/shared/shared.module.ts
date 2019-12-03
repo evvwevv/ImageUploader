@@ -9,6 +9,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material';
 import { MatChipsModule } from '@angular/material/chips';
 import {MatGridListModule} from '@angular/material/grid-list'; 
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 @NgModule({
     imports: [
@@ -22,7 +24,9 @@ import {MatGridListModule} from '@angular/material/grid-list';
         ReactiveFormsModule,
         MatDialogModule,
         MatChipsModule,
-        MatGridListModule
+        MatGridListModule,
+        MatTabsModule,
+        MatSnackBarModule
     ],
     exports: [
         MatToolbarModule,
@@ -35,7 +39,9 @@ import {MatGridListModule} from '@angular/material/grid-list';
         ReactiveFormsModule,
         MatDialogModule,
         MatChipsModule,
-        MatGridListModule
+        MatGridListModule,
+        MatTabsModule,
+        MatSnackBarModule
     ]
 })
 export class SharedModule {}

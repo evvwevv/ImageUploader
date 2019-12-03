@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>{{sharedImage.imageName}}</h1>
+<div mat-dialog-content>
+    <img style="max-width: 400px;" id="fileimage" src="">
+    <mat-form-field style="width: 100%;">
+        <input placeholder="Image Link" onfocus="this.select()" matInput [readonly]="true" value="{{sharedImage.imageUrl}}">
+    </mat-form-field>
+    <h3 mat-dialog-title>Uploaded by: {{sharedImage.originalOwner}}</h3>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button color="primary" (click)="onCloseClick()">Close</button>
+</div>

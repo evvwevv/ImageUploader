@@ -1,9 +1,32 @@
 .search-form {
-    display: flex;
+    display: block;
     flex-direction: column;
+    justify-content: center;
+    position: relative;
+    max-width: 40em;
+    margin: 0 auto;
+    padding-bottom: 0%;
 }
 
-.search-card {
-    max-width: 400px;
-    margin: 30px auto;
+.search-input {
+    max-width: 700px;
+}
+
+.mat-form-field {
+    text-align: center;
+}
+
+.mat-card {
+    width: 80%;
+    max-height: 80%;
+}
+
+.image {
+    width: relative;
+    max-height: 200px;
+    object-fit: contain;
+}
+
+.imageTitle {
+    margin-left: 10px;
 }

@@ -1,0 +1,24 @@
+<h1 mat-dialog-title>Image Sharing</h1>
+<form style="width:100%;" [formGroup]="shareForm">
+<div mat-dialog-content style="overflow-x: hidden;">
+      <mat-form-field style="width:100%;">
+        <mat-chip-list #chipList>
+          <mat-chip *ngFor="let user of sharedUsers" [selectable]="selectable"
+              [removable]="removable" (removed)="remove(user)">
+              {{user}}
+              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+          </mat-chip>
+          <input placeholder="Add and remove users to share your image with"
+              [matChipInputFor]="chipList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              [matChipInputAddOnBlur]="addOnBlur"
+              (matChipInputTokenEnd)="add($event)"
+              formControlName="user">
+        </mat-chip-list>
+        <mat-error>Must be a valid email</mat-error>
+      </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="onDoneClick()">Done</button>
+</div>
+</form>
